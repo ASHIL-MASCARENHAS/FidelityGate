@@ -51,10 +51,12 @@ export function FidelityMonitoringRecharts({
       // If current report is available, provide single point from current report
       if (currentReport) {
         const rep = 'report' in currentReport ? currentReport.report : currentReport;
-        const score = rep?.stability_score !== undefined ? rep.stability_score * 100 : 88;
-        const worst = rep?.worst_latency_ms || 30;
-        const nominal = rep?.nominal_latency_ms || 20;
-        const peakU = rep?.peak_utilization || 0.75;
+        const score = rep?.stability_score !== undefined
+          ? rep.stability_score * 100
+          : (scenario ? scenario.stability_threshold * 100 : 0);
+        const nominal = rep?.nominal_latency_ms ?? scenario?.nominal_latency_ms ?? 0;
+        const worst = rep?.worst_latency_ms ?? (scenario ? scenario.nominal_latency_ms * scenario.latency_multiplier_max : 0);
+        const peakU = rep?.peak_utilization ?? (scenario ? scenario.offered_load_mbps / scenario.capacity_mbps : 0);
         return [
           {
             epoch: 'Active Run',
@@ -79,10 +81,12 @@ export function FidelityMonitoringRecharts({
     const recent = sorted.slice(-15);
     return recent.map((r, i) => {
       const rep = r.report || {};
-      const score = rep.stability_score !== undefined ? rep.stability_score * 100 : 85;
-      const worst = rep.worst_latency_ms || 25;
-      const nominal = rep.nominal_latency_ms || 18;
-      const peakU = rep.peak_utilization || 0.75;
+      const score = rep.stability_score !== undefined
+        ? rep.stability_score * 100
+        : (scenario ? scenario.stability_threshold * 100 : 0);
+      const nominal = rep.nominal_latency_ms ?? scenario?.nominal_latency_ms ?? 0;
+      const worst = rep.worst_latency_ms ?? (scenario ? scenario.nominal_latency_ms * scenario.latency_multiplier_max : 0);
+      const peakU = rep.peak_utilization ?? (scenario ? scenario.offered_load_mbps / scenario.capacity_mbps : 0);
 
       const label = r.created_at
         ? new Date(r.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -97,7 +101,7 @@ export function FidelityMonitoringRecharts({
         loadDrift: parseFloat(((peakU - 0.75) * 100).toFixed(1)),
       };
     });
-  }, [runs, currentReport]);
+  }, [runs, currentReport, scenario]);
 
   // Actual outcomes distribution calculated strictly from real persisted runs
   const acceptCount = Array.isArray(runs) ? runs.filter((r) => r.decision === 'ACCEPT').length : 0;

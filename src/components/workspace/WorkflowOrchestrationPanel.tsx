@@ -364,7 +364,7 @@ export function WorkflowOrchestrationPanel({
 
               {activeWorkflow?.gate_verdict && (
                 <span
-                  className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-full ${
+                  className={`text-xs font-mono font-bold px-3 py-1 rounded-full shadow-fine ${
                     activeWorkflow.gate_verdict === 'ACCEPT'
                       ? 'bg-emerald-verdict-subtle text-emerald-verdict border border-emerald-verdict/30'
                       : activeWorkflow.gate_verdict === 'GATHER_EVIDENCE'
@@ -501,7 +501,7 @@ export function WorkflowOrchestrationPanel({
                   <FileCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="t-panel-title">Post-Intervention Outcome Report</h3>
+                  <h3 className="text-base sm:text-lg font-bold text-ink dark:text-ink-dark tracking-tight">Post-Intervention Outcome Report</h3>
                   <p className="text-[11px] text-muted-fg dark:text-muted-dark">
                     Comparative twin simulation: Baseline vs Candidate Intervention
                   </p>
@@ -510,7 +510,7 @@ export function WorkflowOrchestrationPanel({
 
               {outcome && (
                 <span
-                  className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-full ${
+                  className={`text-xs font-mono font-bold px-3 py-1 rounded-full shadow-fine ${
                     outcome.overall_impact === 'IMPROVED'
                       ? 'bg-emerald-verdict-subtle text-emerald-verdict border border-emerald-verdict/30'
                       : outcome.overall_impact === 'MIXED'
@@ -528,10 +528,10 @@ export function WorkflowOrchestrationPanel({
             {outcome ? (
               <div className="space-y-4">
                 {/* 2x2 Metric Comparison Grid */}
-                <div className="grid grid-cols-2 gap-3 font-mono text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
                   {/* Latency Comparison */}
-                  <div className="p-3 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/50 dark:bg-surface-dark/50 space-y-1">
-                    <span className="text-[10px] uppercase text-muted-fg dark:text-muted-dark block">
+                  <div className="p-4 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/70 dark:bg-surface-dark/70 space-y-1.5 shadow-fine">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg dark:text-muted-dark block">
                       RTT Latency Shift
                     </span>
                     <div className="flex items-baseline space-x-2">
@@ -557,8 +557,8 @@ export function WorkflowOrchestrationPanel({
                   </div>
 
                   {/* Utilization Comparison */}
-                  <div className="p-3 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/50 dark:bg-surface-dark/50 space-y-1">
-                    <span className="text-[10px] uppercase text-muted-fg dark:text-muted-dark block">
+                  <div className="p-4 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/70 dark:bg-surface-dark/70 space-y-1.5 shadow-fine">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg dark:text-muted-dark block">
                       Peak Edge Utilization
                     </span>
                     <div className="flex items-baseline space-x-2">
@@ -591,8 +591,8 @@ export function WorkflowOrchestrationPanel({
                   </div>
 
                   {/* Capacity Violations */}
-                  <div className="p-3 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/50 dark:bg-surface-dark/50 space-y-1">
-                    <span className="text-[10px] uppercase text-muted-fg dark:text-muted-dark block">
+                  <div className="p-4 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/70 dark:bg-surface-dark/70 space-y-1.5 shadow-fine">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg dark:text-muted-dark block">
                       Capacity Violations
                     </span>
                     <span className={`text-base font-bold block ${
@@ -610,8 +610,8 @@ export function WorkflowOrchestrationPanel({
                   </div>
 
                   {/* SLO Violations */}
-                  <div className="p-3 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/50 dark:bg-surface-dark/50 space-y-1">
-                    <span className="text-[10px] uppercase text-muted-fg dark:text-muted-dark block">
+                  <div className="p-4 rounded-xl border border-hairline dark:border-hairline-dark bg-surface/70 dark:bg-surface-dark/70 space-y-1.5 shadow-fine">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg dark:text-muted-dark block">
                       SLO Budget Violations
                     </span>
                     <span className={`text-base font-bold block ${
@@ -630,7 +630,7 @@ export function WorkflowOrchestrationPanel({
                 </div>
 
                 {/* Audit Linkage & Provenance */}
-                <div className="p-3 rounded-xl bg-surface/30 dark:bg-surface-dark/30 border border-hairline dark:border-hairline-dark grid grid-cols-2 gap-2 text-[10px] font-mono text-muted-fg dark:text-muted-dark">
+                <div className="p-4 rounded-xl bg-surface/50 dark:bg-surface-dark/50 border border-hairline dark:border-hairline-dark grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono text-muted-fg dark:text-muted-dark">
                   <div>
                     <span className="block font-semibold text-ink dark:text-ink-dark">Outcome ID:</span>
                     <span className="truncate block">{outcome.outcome_id}</span>
@@ -651,14 +651,14 @@ export function WorkflowOrchestrationPanel({
 
                 {/* Executive Summary & Boundaries */}
                 <div className="p-3 rounded-xl bg-surface dark:bg-surface-dark border border-hairline dark:border-hairline-dark space-y-2">
-                  <span className="text-[11px] font-bold text-ink dark:text-ink-dark font-mono block">
+                  <span className="text-xs font-bold text-ink dark:text-ink-dark uppercase tracking-wider block font-sans">
                     Intervention Assessment & Boundaries
                   </span>
-                  <p className="text-xs text-muted-fg dark:text-muted-dark leading-relaxed font-mono">
+                  <p className="text-xs sm:text-sm text-ink/90 dark:text-ink-dark/90 leading-relaxed font-sans">
                     Intervention {outcome.candidate_id} on {outcome.scenario_id} produced {outcome.overall_impact} outcome with {outcome.post_action_capacity_violations} capacity and {outcome.post_action_slo_violations} SLO breaches.
                   </p>
                   {outcome.assumptions_and_limitations?.length > 0 && (
-                    <ul className="text-[10px] text-muted-fg dark:text-muted-dark space-y-1 font-mono list-disc list-inside">
+                    <ul className="text-xs text-muted-fg dark:text-muted-dark space-y-1.5 leading-relaxed font-sans list-disc list-inside">
                       {outcome.assumptions_and_limitations.map((lim, i) => (
                         <li key={i}>{lim}</li>
                       ))}

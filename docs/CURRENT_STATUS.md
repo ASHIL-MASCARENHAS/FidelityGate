@@ -595,6 +595,41 @@ pm run build).
 
 ---
 
+
+
+### O. Final Hardening & Submission Verification (Completed)
+- [x] **Fallback Identifier Elimination**:
+  - Eliminated `'R-reroute-alt1'` fallback in `src/config/autoDemoSteps.ts`. UI now explicitly indicates when no candidate has been selected.
+  - Dynamically derived outcome descriptions in Auto Demo from real persisted `outcomeReport` metrics.
+  - Replaced hardcoded fallback numbers (`86.7%`, `0 Breaches`, `18`, `50`, `94`, `87`, `2`) across workspace views with dynamic formulas derived from scenario bounds and swept evaluation points.
+- [x] **Contract Strictness**:
+  - Updated `scenarioId` to `string | null` across `SelectedRunContextType` and `AutoDemoContext`.
+- [x] **Full-Stack Regression Passed**:
+  - 171/171 Pytest tests passed.
+  - `npx tsc --noEmit` exited code 0 (0 errors).
+  - `npm run lint` exited code 0 (0 warnings/errors).
+  - `npm run build` exited code 0 (18/18 routes compiled).
+
+
+
+### P. Report Typography & Restrained Footer Polish (Completed)
+- [x] **Report Typography Hierarchy Standardized**:
+  - Implemented `.t-report-title`, `.t-section-heading`, `.t-field-label`, `.t-key-value`, and `.t-report-body` in `src/app/globals.css`.
+  - Refined Outcome Report in `WorkflowOrchestrationPanel.tsx` (bold titles, clean 2x2 comparison grid, proportional prose, structured provenance).
+  - Refined XAI Explanation Panel in `DecisionExplanationPanel.tsx` (prominent titles, authoritative summary, clear gate rule cards, un-crowded counterexample and sensitivity tables).
+  - Refined Execution Trace in `ExecutionTraceView.tsx` (bold KPI metrics banner, styled span cards, legible drawer modal).
+  - Refined Evaluation Lab in `EvaluationLab.tsx` (4-way baseline cards, Recharts titles, scenario benchmark matrix).
+  - Refined Run History in `RunHistory.tsx` (bold uppercase headers, padded rows, legible audit table).
+  - Refined Human Approval Modal in `HumanApprovalModal.tsx` (clear authorization header, metric comparison, responsible AI notice).
+- [x] **Restrained Workspace Footer**:
+  - Removed decorative and unsupported technology labels (`Docker`, `Kubernetes`, `Linux eBPF`, `OpenConfig`, `BGP-EVPN`, `SNMPv3`) from `WorkspaceApp.tsx`.
+  - Added clean brand mark, functional links (`User Guide & Criteria`, `Workflow & Approval`), and version attribution.
+- [x] **Full-Stack Verification**:
+  - 171/171 Pytest tests passed.
+  - 0 TypeScript errors (`npx tsc --noEmit`).
+  - 0 ESLint warnings (`npm run lint`).
+  - Production build clean (`npm run build`).
+
 ## 3. Known Limitations & Declarations
 
 1. Cisco telemetry CSV files provide device interface and queue counters, not end-to-end network topology or user SLO transit latency.

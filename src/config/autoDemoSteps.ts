@@ -11,12 +11,14 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       if (ctx.selectedCandidateId) {
         return `Network Topology & Proposed Candidate (${ctx.selectedCandidateId})`;
       }
-      return `Global Network Topology & Telemetry`;
+      return `Global Network Topology & Telemetry (No Candidate Selected)`;
     },
     getDescription: (ctx: AutoDemoContext) => {
-      const scenarioName = ctx.scenarioId || 'wan_congestion';
-      const candidate = ctx.selectedCandidateId || 'R-reroute-alt1';
-      return `Active Scenario: ${scenarioName}. Telemetry ingestion monitors decentralized edge nodes under heavy load. Candidate reroute ${candidate} has been proposed by Agent B for digital-twin validation prior to consequential deployment.`;
+      const scenarioName = ctx.scenarioId ? `Scenario: ${ctx.scenarioId}` : 'No active scenario selected';
+      if (ctx.selectedCandidateId) {
+        return `Active ${scenarioName}. Telemetry ingestion monitors decentralized edge nodes under heavy load. Candidate reroute ${ctx.selectedCandidateId} has been proposed by Agent B for digital-twin validation prior to consequential deployment.`;
+      }
+      return `Active ${scenarioName}. Candidate reroute is currently unavailable for this workflow run (Stage: ${ctx.currentStage || 'UNINITIALIZED'}). To evaluate candidate mitigations, run an automated investigation or select a completed run from Audit Runs.`;
     },
     getNextPreview: () => 'Next: 13-Stage Workflow Orchestration & Human Authorization Boundary',
     dwellSeconds: 5,
@@ -62,9 +64,24 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
         return `The deterministic gate evaluated ${ctx.gateVerdict || 'ACCEPT'}. Algorithmic progression has paused at Stage 11. Consequential network changes strictly require manual operator authorization before simulated execution.`;
       }
       if (ctx.workflowStatus === 'COMPLETED' || ctx.currentStage === 'OUTCOME_REPORTED') {
-        const delta = ctx.outcomeReport?.latency_delta_ms;
-        const deltaStr = typeof delta === 'number' ? ` (${delta > 0 ? '+' : ''}${delta.toFixed(2)} ms)` : '';
-        return `Monotonic lifecycle completed across all 13 stages. Human authorization was granted and simulated digital-twin intervention reached Stage 13${deltaStr}.`;
+        if (ctx.outcomeReport) {
+          const delta = ctx.outcomeReport.latency_delta_ms;
+          const deltaStr = typeof delta === 'number'
+            ? `${delta > 0 ? '+' : ''}${delta.toFixed(2)} ms (${ctx.outcomeReport.latency_reduction_pct.toFixed(1)}%)`
+            : 'latency delta unavailable';
+          const peakUtil = typeof ctx.outcomeReport.post_action_peak_utilization === 'number'
+            ? `${(ctx.outcomeReport.post_action_peak_utilization * 100).toFixed(1)}%`
+            : 'unmeasured';
+          const capViolations = typeof ctx.outcomeReport.post_action_capacity_violations === 'number'
+            ? `${ctx.outcomeReport.post_action_capacity_violations} capacity breach(es)`
+            : 'capacity uncalculated';
+          const sloViolations = typeof ctx.outcomeReport.post_action_slo_violations === 'number'
+            ? `${ctx.outcomeReport.post_action_slo_violations} SLO breach(es)`
+            : 'SLO uncalculated';
+          const impact = ctx.outcomeReport.overall_impact || 'EVALUATED';
+          return `Monotonic lifecycle completed across all 13 stages. Simulated outcome (Evaluation: ${ctx.outcomeReport.post_action_evaluation_id}): latency delta ${deltaStr}, peak edge utilization ${peakUtil}, ${capViolations}, ${sloViolations}. Overall impact: ${impact}.`;
+        }
+        return `Monotonic lifecycle completed across all 13 stages. Human authorization was granted and simulated digital-twin intervention reached Stage 13. Outcome report artifact is pending or unavailable.`;
       }
       return `Current Stage: ${ctx.currentStage || 'RECEIVED'}. Monotonic event bus transitions sequentially through validation, triage, agent investigation, simulation, and gate review.`;
     },
@@ -80,7 +97,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
     title: 'Evidence-Based Explainable AI (XAI)',
     getHeading: (ctx: AutoDemoContext) => {
       if (!ctx.explanationId) {
-        return 'Decision Explanation Status';
+        return 'Decision Explanation Status (Artifact Unavailable)';
       }
       if (ctx.gateVerdict === 'ACCEPT') {
         return 'Decision Attribution & 5 Gate Predicates Verified';
@@ -97,7 +114,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       if (!ctx.explanationId) {
         return `No explanation artifact is currently linked to the selected run (Stage: ${ctx.currentStage || 'IN_PROGRESS'}). Explanations are generated at Stage 9 (EXPLANATION).`;
       }
-      return `Examines the 5 deterministic gate predicates (connectivity, capacity, latency SLO, robustness >= 0.90, zero counterexamples), exact counterexample perturbation vectors, and local simulator elasticity gradients without LLM hallucination.`;
+      return `Artifact: ${ctx.explanationId}. Examines the 5 deterministic gate predicates (connectivity, capacity, latency SLO, robustness >= 0.90, zero counterexamples), exact counterexample perturbation vectors, and local simulator elasticity gradients without LLM hallucination.`;
     },
     getNextPreview: () => 'Next: Monotonically Sequenced Audit Trace (AgentOps)',
     dwellSeconds: 5,
@@ -114,10 +131,14 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       if (count > 0) {
         return `Monotonically Sequenced Audit Events (${count} Events)`;
       }
-      return 'Execution Trace & Event Timeline';
+      return 'Execution Trace & Event Timeline (0 Events)';
     },
-    getDescription: () => {
-      return `Immutable audit trail showing monotonic stage transitions, actor attribution (Ingestion Engine -> Triage Detector -> Agent A -> Agent B -> Simulator -> Human Operator), and exact millisecond timestamp offsets.`;
+    getDescription: (ctx: AutoDemoContext) => {
+      const count = ctx.workflowEventsCount || 0;
+      if (count > 0) {
+        return `Immutable audit trail showing ${count} monotonic stage transitions, actor attribution (Ingestion Engine -> Triage Detector -> Agent A -> Agent B -> Simulator -> Human Operator), and exact millisecond timestamp offsets.`;
+      }
+      return `No audit events recorded for current run context (Stage: ${ctx.currentStage || 'INITIAL'}). Events are recorded monotonically as the workflow progresses.`;
     },
     getNextPreview: () => 'Next: Fidelity & Latency Distribution Metrics',
     dwellSeconds: 5,
@@ -130,7 +151,10 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
     tabLabel: 'Metrics',
     title: 'Fidelity & Distribution Metrics',
     getHeading: () => 'Fidelity & Latency Distribution Metrics',
-    getDescription: () => {
+    getDescription: (ctx: AutoDemoContext) => {
+      if (ctx.outcomeReport) {
+        return `Latency & utilization distributions derived from actual SQLite audit records. Active run outcome: ${ctx.outcomeReport.post_action_latency_ms.toFixed(2)} ms latency (shift: ${ctx.outcomeReport.latency_delta_ms > 0 ? '+' : ''}${ctx.outcomeReport.latency_delta_ms.toFixed(2)} ms) with ${(ctx.outcomeReport.post_action_peak_utilization * 100).toFixed(1)}% peak utilization.`;
+      }
       return `Nominal versus worst-case behavior across recorded runs. Visualizes latency distributions, stability metrics, and SLA threshold margins derived directly from persisted runs.`;
     },
     getNextPreview: () => 'Next: 4-Way Baseline Benchmarks in Evaluation Lab',
@@ -144,8 +168,9 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
     tabLabel: 'Evaluation Lab',
     title: '4-Way Scientific Baseline Benchmarks',
     getHeading: () => '4-Way Baseline Benchmarks & Scientific Rigor',
-    getDescription: () => {
-      return `Empirical benchmark comparing FidelityGate against 3 standard policies: Nominal-Only (eliminates unsafe acceptances), Fixed Safety Margin (+25%, avoids false abstentions), and Non-Adaptive Sweeps (minimizes probe and simulation costs).`;
+    getDescription: (ctx: AutoDemoContext) => {
+      const candidateInfo = ctx.selectedCandidateId ? `Active Candidate: ${ctx.selectedCandidateId}. ` : '';
+      return `${candidateInfo}Empirical benchmark comparing FidelityGate against 3 standard policies: Nominal-Only (eliminates unsafe acceptances), Fixed Safety Margin (+25%, avoids false abstentions), and Non-Adaptive Sweeps (minimizes probe and simulation costs).`;
     },
     getNextPreview: () => 'Next: Immutable Audit Runs & Historical Forensics',
     dwellSeconds: 5,
@@ -161,11 +186,13 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       if (ctx.selectedWorkflowRunId) {
         return `Immutable Audit Trail (Selected: ${ctx.selectedWorkflowRunId})`;
       }
-      return 'Immutable Audit Runs';
+      return 'Immutable Audit Runs (No Run Selected)';
     },
     getDescription: (ctx: AutoDemoContext) => {
-      const runId = ctx.selectedWorkflowRunId || 'active';
-      return `Complete historical record of all executed workflows, gate decisions, and outcome identifiers persisted immutably in SQLite. Run ${runId} is currently loaded into the workspace context.`;
+      if (ctx.selectedWorkflowRunId) {
+        return `Complete historical record of all executed workflows, gate decisions, and outcome identifiers persisted immutably in SQLite. Run ${ctx.selectedWorkflowRunId} is currently loaded into the workspace context.`;
+      }
+      return `Complete historical record of all executed workflows, gate decisions, and outcome identifiers persisted immutably in SQLite. Select a run to inspect its artifacts across all tabs.`;
     },
     getNextPreview: () => 'Next: Platform Architecture & Hackathon Judging Alignment',
     dwellSeconds: 5,
@@ -185,4 +212,3 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
     dwellSeconds: 5,
   },
 ];
-

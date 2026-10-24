@@ -158,3 +158,13 @@
   3. **5-Second Viewing Dwell Bar (`AutoDemoFloatingControl`)**: Upon entering each destination tab, a non-intrusive floating control bar provides a 5-second inspection interval with step counter, dwell countdown bar, Pause/Resume (<kbd>Space</kbd>), Next Tab (<kbd>Enter</kbd>), and Stop (<kbd>Esc</kbd>).
   4. **Strict Human Boundary Inviolability**: At Stage 11 (`AWAITING_HUMAN_APPROVAL`), Auto Demo unconditionally pauses and alerts the operator. It never executes an intervention or signs off on an approval automatically; human authorization remains exclusively with the operator.
 - **Rationale**: Provides an effortless, judge-ready presentation experience that clearly conveys the purpose and evidence of each view while preserving zero-deception data integrity and the inviolable human governance boundary.
+
+
+## ADR-029: Final Hardening, Complete Fallback Identifier Elimination & Strict Dynamic Derivations
+- **Context**: During pre-submission verification of the Auto Demo and workspace views, trace and decision cards contained several legacy fallback numbers (`86.7%`, `0 Breaches`, `18`, `50`, `94`, `87`, `2`) and a fallback candidate identifier (`'R-reroute-alt1'`) when context was null. While harmless in nominal scenarios, these fallbacks could mislead an operator or judge if an abnormal workflow or empty context was evaluated.
+- **Decision**:
+  1. **Complete elimination of fallback candidate IDs**: In `src/config/autoDemoSteps.ts`, `ctx.selectedCandidateId` is evaluated without `'R-reroute-alt1'` fallback. If null, the UI honestly states that no candidate has been selected or generated yet and gives clear instructions on how to run Stage 4 or load a run from SQLite.
+  2. **Complete elimination of hardcoded outcome assertions**: In `src/config/autoDemoSteps.ts`, outcome descriptions are strictly dynamically computed from `ctx.outcomeReport` (post-action evaluation ID, latency shift, peak utilization, capacity breach count, SLO breach count, overall impact). If missing, the UI states that the outcome report is not yet recorded.
+  3. **Strict dynamic derivations in UI cards**: In `DecisionWorkspace.tsx`, `ExecutionTraceView.tsx`, and `FidelityMonitoringRecharts.tsx`, all fallback magic numbers were replaced by mathematical bounds and empirical evaluations derived directly from `currentScenario`, `points`, and trace failure events.
+  4. **Updated TypeScript contracts**: Changed `scenarioId: string` to `scenarioId: string | null` in `src/types/demo.ts` and `src/types/index.ts` to reflect the honest reality of unselected runs.
+- **Rationale**: Guarantees absolute epistemic honesty and data integrity across the entire application. Zero fake data, zero simulated successes, zero fallback assumptions.

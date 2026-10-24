@@ -1808,3 +1808,53 @@ export interface SelectedRunContextType {
   clearSelectedWorkflow: () => void;
 }
 `
+
+
+---
+
+## 10. Layer 8C & Hardening: Auto Demo Context & Step Contracts
+
+```typescript
+export interface AutoDemoContext {
+  activeStepIndex: number;
+  currentStep: AutoDemoStep;
+  totalSteps: number;
+  isModalOpen: boolean;
+  isFloatingBarVisible: boolean;
+  isDwellPaused: boolean;
+  dwellRemainingMs: number;
+  dwellProgressPercent: number;
+  modalRemainingSeconds: number;
+  statusHeadline: string;
+  workflowStatus: string | null;
+  scenarioId: string | null;
+  gateVerdict: string | null;
+  isAwaitingApproval: boolean;
+  isCompleted: boolean;
+  isAbstained: boolean;
+  isRejected: boolean;
+
+  // Navigation actions
+  startDemo: () => void;
+  stopDemo: () => void;
+  confirmModalStep: () => void;
+  skipModalStep: () => void;
+  pauseDwell: () => void;
+  resumeDwell: () => void;
+  nextStep: () => void;
+  prevStep: () => void;
+}
+
+export interface AutoDemoStep {
+  id: string;
+  tabKey: WorkspaceTab;
+  title: string;
+  stageName: string;
+  badge: string;
+  modalHeadline: string;
+  modalDescription: (ctx: AutoDemoStepContext) => string;
+  highlights: string[];
+  keyEvidence: (ctx: AutoDemoStepContext) => Array<{ label: string; value: string }>;
+  nextTabName?: string;
+}
+```

@@ -189,7 +189,7 @@ export function DecisionExplanationPanel({
                 <ShieldCheck className="w-5 h-5" />
               </span>
               <div>
-                <h2 className="text-lg font-bold text-ink dark:text-ink-dark">
+                <h2 className="text-xl font-extrabold text-ink dark:text-ink-dark tracking-tight">
                   Evidence-Based Decision Attribution & XAI
                 </h2>
                 <p className="text-xs text-muted-fg dark:text-muted-dark">
@@ -234,7 +234,7 @@ export function DecisionExplanationPanel({
                   <div className="text-xs font-bold uppercase tracking-wider text-cobalt">
                     Authoritative Plain-Language Summary
                   </div>
-                  <p className="text-xs leading-relaxed text-ink dark:text-ink-dark font-sans">
+                  <p className="text-sm leading-relaxed text-ink/90 dark:text-ink-dark/90 font-sans">
                     {explanation.summary}
                   </p>
                 </div>
@@ -384,7 +384,7 @@ export function DecisionExplanationPanel({
                         </span>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-ink dark:text-ink-dark">
+                            <span className="text-sm font-bold text-ink dark:text-ink-dark">
                               {rule.rule_name}
                             </span>
                             <span className="text-[10px] font-mono text-muted-fg px-1.5 py-0.5 rounded bg-hairline/20 dark:bg-hairline-dark">

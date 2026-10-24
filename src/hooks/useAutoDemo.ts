@@ -74,7 +74,7 @@ export function useAutoDemo({
       workflowEventsCount: workflowEvents?.length || 0,
       hasApproval: !!approvalRecord,
       hasOutcome: !!outcomeReport,
-      scenarioId: scenarioId || 'wan_congestion',
+      scenarioId: scenarioId || null,
       outcomeReport,
       approvalRecord,
     }),

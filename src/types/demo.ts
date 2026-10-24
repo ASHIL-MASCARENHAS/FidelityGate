@@ -35,7 +35,7 @@ export interface AutoDemoContext {
   workflowEventsCount: number;
   hasApproval: boolean;
   hasOutcome: boolean;
-  scenarioId: string;
+  scenarioId: string | null;
   outcomeReport: InterventionOutcomeReport | null;
   approvalRecord: HumanApprovalRecord | null;
 }

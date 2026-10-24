@@ -85,7 +85,7 @@ export function EvaluationLab({
               <Scale className="w-4 h-4" />
               <span>Rigorous Evaluation Harness</span>
             </div>
-            <h2 className="text-lg font-semibold text-ink dark:text-ink-dark tracking-tight">
+            <h2 className="text-xl font-bold text-ink dark:text-ink-dark tracking-tight">
               Evaluation Lab &amp; Baseline Comparisons
             </h2>
             <p className="text-xs text-muted-fg dark:text-muted-dark">
@@ -191,7 +191,7 @@ export function EvaluationLab({
                         </span>
                       </div>
 
-                      <h4 className="text-sm font-bold text-ink dark:text-ink-dark tracking-tight">{b.name}</h4>
+                      <h4 className="text-base font-bold text-ink dark:text-ink-dark tracking-tight">{b.name}</h4>
                       <p className="text-[11px] text-muted-fg dark:text-muted-dark mt-1 italic leading-relaxed line-clamp-2">
                         {b.question}
                       </p>

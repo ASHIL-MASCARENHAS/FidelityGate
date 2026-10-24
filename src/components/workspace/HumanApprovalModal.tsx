@@ -86,7 +86,7 @@ export function HumanApprovalModal({
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-ink dark:text-ink-dark">
+              <h3 className="text-lg font-bold text-ink dark:text-ink-dark tracking-tight">
                 Human-in-the-Loop Action Authorization
               </h3>
               <p className="text-xs text-muted-fg dark:text-muted-dark">

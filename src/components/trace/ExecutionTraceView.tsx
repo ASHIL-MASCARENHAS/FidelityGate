@@ -19,6 +19,8 @@ interface ExecutionTraceViewProps {
 export function ExecutionTraceView({
   workflowEvents = [],
   executionTrace = [],
+  counterexample = null,
+  gateVerdict = null,
   scenario = null,
   workflowRunId = null,
   onRunAdaptive,
@@ -63,6 +65,12 @@ export function ExecutionTraceView({
     0
   );
 
+  const breachCount = counterexample
+    ? 1
+    : gateVerdict && 'violations' in gateVerdict && typeof (gateVerdict as any).violations === 'number'
+    ? (gateVerdict as any).violations
+    : traceEvents.filter((ev) => ev.action?.toLowerCase().includes('breach') || ev.status === 'ABSTAIN' || ev.status === 'WARNING').length;
+
   const toolCallsCount = traceEvents.filter(
     (ev) =>
       ev.action?.toLowerCase().includes('diagnostic') ||
@@ -83,7 +91,7 @@ export function ExecutionTraceView({
                 <span className="font-mono text-ink dark:text-ink-dark">· Run {workflowRunId}</span>
               )}
             </div>
-            <h2 className="text-lg font-semibold text-ink dark:text-ink-dark tracking-tight">
+            <h2 className="text-xl font-bold text-ink dark:text-ink-dark tracking-tight">
               {hasWorkflowEvents ? 'Canonical Workflow Stage Execution Trace' : 'Adaptive Counterexample-Guided Trace'}
             </h2>
             <p className="text-xs text-muted-fg dark:text-muted-dark">
@@ -109,13 +117,13 @@ export function ExecutionTraceView({
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 p-4 rounded-xl bg-paper dark:bg-paper-dark/60 border border-hairline dark:border-hairline-dark font-mono text-xs">
           <div>
             <span className="text-muted-fg dark:text-muted-dark text-[11px] block uppercase">Execution Time</span>
-            <span className="text-lg font-semibold text-ink dark:text-ink-dark t-metric">
+            <span className="text-xl font-bold text-ink dark:text-ink-dark t-metric">
               {traceEvents.length > 0 ? `${totalDuration} ms` : '—'}
             </span>
           </div>
           <div>
             <span className="text-muted-fg dark:text-muted-dark text-[11px] block uppercase">Trace Spans</span>
-            <span className="text-lg font-semibold text-cobalt t-metric">{traceEvents.length}</span>
+            <span className="text-xl font-bold text-cobalt t-metric">{traceEvents.length}</span>
           </div>
           <div>
             <span className="text-muted-fg dark:text-muted-dark text-[11px] block uppercase">Source Run</span>
@@ -125,11 +133,13 @@ export function ExecutionTraceView({
           </div>
           <div>
             <span className="text-muted-fg dark:text-muted-dark text-[11px] block uppercase">Diagnostic Calls</span>
-            <span className="text-lg font-semibold text-emerald-verdict t-metric">{toolCallsCount}</span>
+            <span className="text-xl font-bold text-emerald-verdict t-metric">{toolCallsCount}</span>
           </div>
           <div>
             <span className="text-muted-fg dark:text-muted-dark text-[11px] block uppercase">SLO Breaches</span>
-            <span className="text-lg font-semibold text-emerald-verdict t-metric">0</span>
+            <span className={`text-lg font-semibold t-metric ${breachCount > 0 ? 'text-rose-abstain' : 'text-emerald-verdict'}`}>
+              {traceEvents.length > 0 || counterexample ? breachCount : '—'}
+            </span>
           </div>
           <div>
             <span className="text-muted-fg dark:text-muted-dark text-[11px] block uppercase">Audit Engine</span>

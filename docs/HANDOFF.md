@@ -292,3 +292,17 @@ python scripts/verify_outcome_integrity.py
 
 ### Assessment
 **STATUS: GO FOR FINAL PRESENTATION & DEMO**
+
+
+## Final Refinements: Report Typography & Footer Polish (Verified)
+- **Typography Scale**: Authoritative hierarchy established in `src/app/globals.css` (`.t-report-title`, `.t-section-heading`, `.t-field-label`, `.t-key-value`, `.t-report-body`).
+- **Report Views Refined**:
+  1. Outcome Report (`WorkflowOrchestrationPanel.tsx`)
+  2. Decision Explanation Report (`DecisionExplanationPanel.tsx`)
+  3. Execution Trace AgentOps (`ExecutionTraceView.tsx`)
+  4. Baseline Evaluation Lab (`EvaluationLab.tsx`)
+  5. Audit Runs History Table (`RunHistory.tsx`)
+  6. Human Authorization Modal (`HumanApprovalModal.tsx`)
+  7. Decision Workspace Metrics (`DecisionWorkspace.tsx`)
+- **Explore Platform Footer**: Removed unsupported Docker/Kubernetes/eBPF labels in `WorkspaceApp.tsx`, replacing with authentic brand and navigation links.
+- **Verification**: 171/171 Python tests passing, 0 TypeScript errors, 0 ESLint warnings, 18/18 Next.js routes built cleanly.

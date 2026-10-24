@@ -54,7 +54,7 @@ export function RunHistory({ runs = [], onRefresh, onSelectRun, loading }: RunHi
             <Database className="w-4 h-4" />
             <span>SQLite Persistent Audit Trail</span>
           </div>
-          <h2 className="text-lg font-semibold text-ink dark:text-ink-dark tracking-tight">
+          <h2 className="text-xl font-bold text-ink dark:text-ink-dark tracking-tight">
             Investigation &amp; Workflow Run History
           </h2>
           <p className="text-xs text-muted-fg dark:text-muted-dark">
@@ -108,14 +108,14 @@ export function RunHistory({ runs = [], onRefresh, onSelectRun, loading }: RunHi
       <div className="editorial-card rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-paper dark:bg-paper-dark/80 border-b border-hairline dark:border-hairline-dark t-eyebrow">
+            <thead className="bg-paper dark:bg-paper-dark/80 border-b border-hairline dark:border-hairline-dark text-xs font-bold uppercase tracking-wider text-muted-fg dark:text-muted-dark">
               <tr>
-                <th className="py-3 px-4">Run ID</th>
-                <th className="py-3 px-4">Timestamp (UTC)</th>
-                <th className="py-3 px-4">Scenario</th>
-                <th className="py-3 px-4">Gate Decision</th>
-                <th className="py-3 px-4">Worst Latency</th>
-                <th className="py-3 px-4">SLO Violations</th>
+                <th className="py-3.5 px-4 font-bold">Run ID</th>
+                <th className="py-3.5 px-4 font-bold">Timestamp (UTC)</th>
+                <th className="py-3.5 px-4 font-bold">Scenario</th>
+                <th className="py-3.5 px-4 font-bold">Gate Decision</th>
+                <th className="py-3.5 px-4 font-bold">Worst Latency</th>
+                <th className="py-3.5 px-4 font-bold">SLO Violations</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>

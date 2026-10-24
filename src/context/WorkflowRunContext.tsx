@@ -155,7 +155,7 @@ export function WorkflowRunProvider({
   const value: SelectedRunContextType = {
     selectedWorkflowRunId,
     selectedWorkflow,
-    scenarioId: selectedWorkflow?.scenario_id || 'wan_congestion',
+    scenarioId: selectedWorkflow?.scenario_id || null,
     workflowStatus: selectedWorkflow?.status || null,
     currentStage: selectedWorkflow?.current_stage || null,
     gateVerdict: selectedWorkflow?.gate_verdict || null,

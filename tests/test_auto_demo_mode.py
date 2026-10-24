@@ -15,17 +15,18 @@ def generate_auto_demo_step_content(step_id: str, ctx: dict) -> dict:
     current_stage = ctx.get("current_stage", "RECEIVED")
     workflow_status = ctx.get("workflow_status", "PENDING")
     gate_verdict = ctx.get("gate_verdict", "PENDING")
-    selected_candidate_id = ctx.get("selected_candidate_id", "R-reroute-alt1")
+    selected_candidate_id = ctx.get("selected_candidate_id")
     explanation_id = ctx.get("explanation_id")
     outcome_report = ctx.get("outcome_report")
+    scenario_id = ctx.get("scenario_id")
 
     if step_id == "decision":
-        heading = (
-            f"Network Topology & Proposed Candidate ({selected_candidate_id})"
-            if selected_candidate_id
-            else "Global Network Topology & Telemetry"
-        )
-        desc = f"Active Scenario: {ctx.get('scenario_id', 'wan_congestion')}. Candidate reroute {selected_candidate_id} proposed by Agent B."
+        if selected_candidate_id:
+            heading = f"Network Topology & Proposed Candidate ({selected_candidate_id})"
+            desc = f"Active Scenario: {scenario_id or 'unspecified'}. Telemetry ingestion monitors decentralized edge nodes under heavy load. Candidate reroute {selected_candidate_id} has been proposed by Agent B for digital-twin validation prior to consequential deployment."
+        else:
+            heading = "Global Network Topology & Telemetry (No Candidate Selected)"
+            desc = f"Active Scenario: {scenario_id or 'unspecified'}. Candidate reroute is currently unavailable for this workflow run (Stage: {current_stage}). To evaluate candidate mitigations, run an automated investigation or select a completed run from Audit Runs."
         return {"heading": heading, "description": desc, "tab": "decision"}
 
     elif step_id == "workflow":
@@ -43,33 +44,40 @@ def generate_auto_demo_step_content(step_id: str, ctx: dict) -> dict:
             desc = f"The deterministic gate evaluated {gate_verdict}. Algorithmic progression has paused at Stage 11. Consequential network changes strictly require manual operator authorization before simulated execution."
         # 4. Check completed execution with outcome report
         elif workflow_status == "COMPLETED" or current_stage == "OUTCOME_REPORTED":
-            delta = outcome_report.get("latency_delta_ms") if outcome_report else None
-            delta_str = f" ({delta:+.2f} ms)" if delta is not None else ""
             heading = "13-Stage Workflow Completed & Outcome Reported"
-            desc = f"Monotonic lifecycle completed across all 13 stages. Human authorization was granted and simulated digital-twin intervention reached Stage 13{delta_str}."
+            if outcome_report:
+                delta = outcome_report.get("latency_delta_ms")
+                delta_str = f"{delta:+.2f} ms" if delta is not None else "latency delta unavailable"
+                eval_id = outcome_report.get("post_action_evaluation_id", "eval-post")
+                cap = outcome_report.get("post_action_capacity_violations", 0)
+                slo = outcome_report.get("post_action_slo_violations", 0)
+                impact = outcome_report.get("overall_impact", "EVALUATED")
+                desc = f"Monotonic lifecycle completed across all 13 stages. Simulated outcome (Evaluation: {eval_id}): latency delta {delta_str}, {cap} capacity breach(es), {slo} SLO breach(es). Overall impact: {impact}."
+            else:
+                desc = "Monotonic lifecycle completed across all 13 stages. Human authorization was granted and simulated digital-twin intervention reached Stage 13."
         else:
             heading = "13-Stage Operational Workflow State Machine"
-            desc = f"Current Stage: {current_stage}. Monotonic event bus transitions sequentially."
+            desc = f"Current Stage: {current_stage}. Monotonic event bus transitions sequentially through validation, triage, agent investigation, simulation, and gate review."
         return {"heading": heading, "description": desc, "tab": "workflow"}
 
     elif step_id == "xai":
         if not explanation_id:
-            heading = "Decision Explanation Status"
+            heading = "Decision Explanation Status (Artifact Unavailable)"
             desc = f"No explanation artifact is currently linked to the selected run (Stage: {current_stage}). Explanations are generated at Stage 9 (EXPLANATION)."
         elif gate_verdict == "ACCEPT":
             heading = "Decision Attribution & 5 Gate Predicates Verified"
-            desc = "Examines the 5 deterministic gate predicates, exact counterexample perturbation vectors, and local simulator elasticity gradients."
+            desc = f"Artifact: {explanation_id}. Examines the 5 deterministic gate predicates, exact counterexample perturbation vectors, and local simulator elasticity gradients."
         elif gate_verdict == "ABSTAIN":
             heading = "Counterexample Replay & Constraint Breach Attribution"
-            desc = "Documents exact perturbation vectors and capacity margin breaches that forced gate abstention."
+            desc = f"Artifact: {explanation_id}. Documents exact perturbation vectors and capacity margin breaches that forced gate abstention."
         else:
             heading = "Decision Attribution & Sensitivity Analysis"
-            desc = "Sensitivity elasticity analysis and counterfactual evaluations."
+            desc = f"Artifact: {explanation_id}. Sensitivity elasticity analysis and counterfactual evaluations."
         return {"heading": heading, "description": desc, "tab": "xai"}
 
     elif step_id == "trace":
         count = ctx.get("workflow_events_count", 0)
-        heading = f"Monotonically Sequenced Audit Events ({count} Events)" if count > 0 else "Execution Trace & Event Timeline"
+        heading = f"Monotonically Sequenced Audit Events ({count} Events)" if count > 0 else "Execution Trace & Event Timeline (0 Events)"
         desc = "Immutable audit trail showing monotonic stage transitions and actor attribution."
         return {"heading": heading, "description": desc, "tab": "trace"}
 
@@ -88,9 +96,10 @@ def generate_auto_demo_step_content(step_id: str, ctx: dict) -> dict:
         }
 
     elif step_id == "history":
-        run_id = ctx.get("selected_workflow_run_id", "active")
+        run_id = ctx.get("selected_workflow_run_id")
+        heading = f"Immutable Audit Trail (Selected: {run_id})" if run_id else "Immutable Audit Runs (No Run Selected)"
         return {
-            "heading": f"Immutable Audit Trail (Selected: {run_id})",
+            "heading": heading,
             "description": "Complete historical record of all executed workflows persisted immutably in SQLite.",
             "tab": "history",
         }
@@ -143,12 +152,13 @@ def test_03_status_heading_reflects_completed_outcome():
             "latency_delta_ms": -3.55,
             "overall_impact": "IMPROVED",
             "post_action_capacity_violations": 0,
+            "post_action_evaluation_id": "eval-post-02",
         },
     }
     content = generate_auto_demo_step_content("workflow", ctx)
     assert content["heading"] == "13-Stage Workflow Completed & Outcome Reported"
     assert "-3.55 ms" in content["description"]
-    assert "Stage 13" in content["description"]
+    assert "all 13 stages" in content["description"]
 
 
 def test_04_abstain_decision_honestly_reported():
@@ -186,7 +196,7 @@ def test_06_missing_explanation_communicated_truthfully():
         "explanation_id": None,
     }
     content = generate_auto_demo_step_content("xai", ctx)
-    assert content["heading"] == "Decision Explanation Status"
+    assert "Artifact Unavailable" in content["heading"]
     assert "No explanation artifact is currently linked" in content["description"]
     assert "Stage 9 (EXPLANATION)" in content["description"]
 
@@ -227,4 +237,3 @@ def test_08_no_workflow_selected_context_handled_safely():
         assert content["tab"] == sid
         assert isinstance(content["heading"], str)
         assert isinstance(content["description"], str)
-

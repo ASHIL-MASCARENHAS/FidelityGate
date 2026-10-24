@@ -927,3 +927,29 @@ All notable changes to this project are documented in this file per `DOCUMENTATI
 - `npm run build`: **PASS** — Compiled 11 routes with 0 errors and 0 warnings.
 - `python -m pytest tests/`: **PASS** — 11 of 11 unit tests passed in 1.74s.
 - Browser subagent live smoke test: **PASS** — Verified on `http://localhost:3000` across landing page, 3D focal object, services showcase, dark/light themes, and workspace views.
+
+## [1.0.0] - 2026-10-24
+
+### Refined (Typography & Footer Polish)
+- Standardized report typography scale (`.t-report-title`, `.t-section-heading`, `.t-field-label`, `.t-key-value`, `.t-report-body`) in `src/app/globals.css`.
+- Upgraded typography and padding in Outcome Report (`WorkflowOrchestrationPanel.tsx`), XAI Decision Report (`DecisionExplanationPanel.tsx`), Trace Report (`ExecutionTraceView.tsx`), Baseline Evaluation Report (`EvaluationLab.tsx`), Audit Runs (`RunHistory.tsx`), and Authorization Modal (`HumanApprovalModal.tsx`).
+- Removed unsupported technology labels (`Docker`, `Kubernetes`, `Linux eBPF`, `OpenConfig`, `BGP-EVPN`, `SNMPv3`) from the Explore the Platform footer in `WorkspaceApp.tsx`.
+- Documented report design system tokens in `docs/DESIGN_SYSTEM.md`.
+
+### Added
+- ADR-029 documenting final hardening and fallback identifier elimination.
+- Automated tests in `tests/test_auto_demo_mode.py` verifying fallback elimination and truthful descriptions.
+- Dynamic breach counting in `ExecutionTraceView.tsx` from counterexample and trace failure events.
+- Dynamic mathematical bounds in `SplineTwinCenterpiece`, `Twin3DViewer`, and `UncertaintyChart` derived from scenario parameters.
+
+### Changed
+- Removed `'R-reroute-alt1'` fallback from `src/config/autoDemoSteps.ts`; displays explicit unselected notice.
+- Dynamically derived outcome narratives in `autoDemoSteps.ts` from `ctx.outcomeReport`.
+- Updated `scenarioId` in `SelectedRunContextType` and `AutoDemoContext` to `string | null`.
+- Cleaned up ESLint dependencies in `FidelityMonitoringRecharts.tsx`.
+
+### Verified
+- 171/171 Python tests passing.
+- TypeScript compiler (0 errors).
+- ESLint (0 errors, 0 warnings).
+- Next.js production build (18/18 routes).

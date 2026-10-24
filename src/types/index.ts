@@ -1148,7 +1148,7 @@ export interface WorkflowRunSummary {
 export interface SelectedRunContextType {
   selectedWorkflowRunId: string | null;
   selectedWorkflow: WorkflowRunSummary | null;
-  scenarioId: string;
+  scenarioId: string | null;
   workflowStatus: WorkflowStatus | null;
   currentStage: WorkflowStage | null;
   gateVerdict: GateDecisionType | null;

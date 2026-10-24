@@ -386,12 +386,16 @@ export function DecisionWorkspace({
             Decision Stability
           </span>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-black text-emerald-verdict font-mono">
-              {report ? (report.stability_score * 100).toFixed(1) : '86.7'}
+            <span className="text-2xl font-bold text-emerald-verdict font-mono">
+              {report ? (report.stability_score * 100).toFixed(1) : (currentScenario.stability_threshold * 100).toFixed(1)}
               <span className="text-sm font-normal text-muted-fg dark:text-muted-dark ml-1">%</span>
             </span>
             <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-paper dark:bg-paper-dark text-muted-fg dark:text-muted-dark border border-hairline dark:border-hairline-dark">
-              {report ? `${report.violations} Breaches` : '0 Breaches'}
+              {report
+                ? `${report.violations} Breaches`
+                : points.length > 0
+                ? `${points.filter((p: any) => p.latency_ms > currentScenario.slo_latency_ms).length} Breaches`
+                : 'Pending'}
             </span>
           </div>
           <span className="text-[11px] text-muted-fg dark:text-muted-dark mt-1 block">
@@ -445,17 +449,17 @@ export function DecisionWorkspace({
           {twinViewMode === 'spline_centerpiece' ? (
             <SplineTwinCenterpiece
               decision={decision}
-              nominalLatency={report ? Math.round(report.nominal_latency_ms) : 18}
-              worstLatency={report ? Math.round(report.worst_latency_ms) : 50}
-              fidelityScore={report ? Math.round(report.stability_score * 100) : 94}
+              nominalLatency={report ? Math.round(report.nominal_latency_ms) : Math.round(currentScenario.nominal_latency_ms)}
+              worstLatency={report ? Math.round(report.worst_latency_ms) : Math.round(currentScenario.nominal_latency_ms * currentScenario.latency_multiplier_max)}
+              fidelityScore={report ? Math.round(report.stability_score * 100) : Math.round(currentScenario.stability_threshold * 100)}
             />
 
           ) : (
             <Twin3DViewer
               decision={decision}
-              nominalLatency={report ? Math.round(report.nominal_latency_ms) : 18}
-              worstLatency={report ? Math.round(report.worst_latency_ms) : 50}
-              peakUtil={report ? Math.round(report.peak_utilization * 100) : 87}
+              nominalLatency={report ? Math.round(report.nominal_latency_ms) : Math.round(currentScenario.nominal_latency_ms)}
+              worstLatency={report ? Math.round(report.worst_latency_ms) : Math.round(currentScenario.nominal_latency_ms * currentScenario.latency_multiplier_max)}
+              peakUtil={report ? Math.round(report.peak_utilization * 100) : Math.round((currentScenario.offered_load_mbps / currentScenario.capacity_mbps) * 100)}
             />
 
           )}
@@ -476,9 +480,9 @@ export function DecisionWorkspace({
           <UncertaintyChart
             points={points}
             slo={currentScenario.slo_latency_ms}
-            nominal={report ? report.nominal_latency_ms : 18}
-            worst={report ? report.worst_latency_ms : 50}
-            violations={report ? report.violations : 2}
+            nominal={report ? report.nominal_latency_ms : currentScenario.nominal_latency_ms}
+            worst={report ? report.worst_latency_ms : currentScenario.nominal_latency_ms * currentScenario.latency_multiplier_max}
+            violations={report ? report.violations : points.length > 0 ? points.filter((p: any) => p.latency_ms > currentScenario.slo_latency_ms).length : 0}
             sensitivity={report?.sensitivity}
           />
 

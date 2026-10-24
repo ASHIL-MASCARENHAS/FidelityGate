@@ -154,3 +154,34 @@ The Auto Demo subsystem introduces structured, high-visibility interactive contr
 - <kbd>Escape</kbd>: Immediately stops the Auto Demo tour and closes any open modal.
 - <kbd>Space</kbd>: Pauses or resumes the active dwell timer.
 - <kbd>Enter</kbd>: Advances immediately through the modal or jumps to the next tab without waiting for countdowns.
+
+
+---
+
+## 7. Enterprise Report Typography & Restrained Footer System
+
+### A. Report Typography Hierarchy Specification
+To guarantee consistent, legible, and un-crowded presentation across all decision reports, outcome summaries, and XAI findings, FidelityGate enforces the following report typography hierarchy:
+
+| Hierarchy Role | Semantic Class | Size & Line Height | Weight & Tracking | Role & Visual Treatment |
+| :--- | :--- | :--- | :--- | :--- |
+| **Report Title** | `.t-report-title` | `1.25rem` (20px) / `1.30` | Bold (`700`) / `-0.02em` | Main report document header (e.g. Post-Intervention Outcome Report, XAI Decision Attribution). Clearly distinct from metadata. |
+| **Section Heading** | `.t-section-heading` | `1.00rem` (16px) / `1.35` | Bold (`700`) / `-0.015em` | Major report division header (e.g. Metric Comparison, Gate Rules, Counterexample Replay). |
+| **Card / Panel Title** | `.t-panel-title` | `0.9375rem` (15px) / `1.40` | Bold (`700`) / `-0.012em` | Card-level container titles, diagnostic cycles. |
+| **Field Labels** | `.t-field-label` | `0.75rem` (12px) / `1.45` | SemiBold (`600`) / `0.025em` uppercase | Table headers, property labels, metric descriptors. |
+| **Key Values & Figures** | `.t-key-value`, `.t-metric` | `0.875rem` (14px) / `1.40` | Bold (`700`) / `-0.01em` tabular | Important metrics, latency numbers, delta shifts, breach counts, stability scores. |
+| **Body & Prose Text** | `.t-report-body` | `0.8125rem` (13px) / `1.65` | Regular (`400`) / Normal | Executive summaries, plain-language explanations, limitation descriptions. Never uniformly extra-bold. |
+| **Metadata & Provenance** | `.t-report-meta` | `0.6875rem` (11px) / `1.50` | Medium (`500`) / Monospace | Run IDs, observation hashes, ISO-8601 UTC timestamps, execution twin IDs. |
+
+### B. Un-Crowding & Spacing Principles
+- **2x2 Metric Grids**: Expanded card padding (`p-4` with `rounded-xl`), elevated surfaces (`bg-surface/70 dark:bg-surface-dark/70`), and distinct key-value separation.
+- **Table Padding**: Table headers and data cells use `py-3.5 px-4` to `py-4 px-4` with vertical alignment, preventing cramped borders and overflowing text.
+- **Prose Contrast**: Plain-language summaries and limitation narratives use proportional fonts (`font-sans`) with generous line-height (`leading-relaxed`) rather than dense raw monospace.
+
+### C. Restrained Platform Footer (Zero False Claims)
+- Removed all decorative, unsupported technology badges (`Docker`, `Kubernetes`, `Linux eBPF`, `OpenConfig`, `BGP-EVPN`, `SNMPv3`) from the platform workspace footer.
+- Replaced with an authentic, restrained enterprise baseline:
+  - Brand mark: `◈ FidelityGate`
+  - Subtitle: `Pre-Production Digital-Twin Validation`
+  - Functional navigation: `User Guide & Criteria`, `Workflow & Approval`
+  - Software version: `v1.0.0`

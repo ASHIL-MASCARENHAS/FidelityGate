@@ -899,14 +899,34 @@ function WorkspaceAppInner({
         </footer>
       </div>
 
-      {/* 6. SUPPORTED ENVIRONMENTS */}
-      <div className="w-full max-w-7xl mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-muted-fg dark:text-muted-dark">
-        <span className="uppercase tracking-wider">Supported environments</span>
-        <span aria-hidden="true" className="w-px h-3 bg-hairline dark:bg-hairline-dark" />
-        {['Docker', 'Kubernetes', 'Linux eBPF', 'OpenConfig', 'BGP-EVPN', 'SNMPv3'].map((env) => (
-          <span key={env}>{env}</span>
-        ))}
-      </div>
+      {/* 6. WORKSPACE FOOTER */}
+      <footer className="w-full max-w-7xl mx-auto mt-8 pt-4 pb-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-fg dark:text-muted-dark px-4 border-t border-hairline/60 dark:border-hairline-dark/60">
+        <div className="flex items-center space-x-2.5">
+          <span className="font-bold text-ink dark:text-ink-dark flex items-center space-x-1.5">
+            <span className="font-mono text-cobalt font-bold">◈</span>
+            <span>FidelityGate</span>
+          </span>
+          <span aria-hidden="true" className="text-hairline dark:text-hairline-dark">·</span>
+          <span>Pre-Production Digital-Twin Validation</span>
+        </div>
+        <div className="flex items-center space-x-4 text-[11px]">
+          <button
+            onClick={() => setActiveTab('guide')}
+            className="hover:text-cobalt transition-colors font-medium underline-offset-4 hover:underline"
+          >
+            User Guide &amp; Criteria
+          </button>
+          <span aria-hidden="true" className="w-px h-3 bg-hairline dark:bg-hairline-dark" />
+          <button
+            onClick={() => setActiveTab('workflow')}
+            className="hover:text-cobalt transition-colors font-medium underline-offset-4 hover:underline"
+          >
+            Workflow &amp; Approval
+          </button>
+          <span aria-hidden="true" className="w-px h-3 bg-hairline dark:bg-hairline-dark" />
+          <span className="font-mono text-muted-fg dark:text-muted-dark">v1.0.0</span>
+        </div>
+      </footer>
     </div>
   );
 }
