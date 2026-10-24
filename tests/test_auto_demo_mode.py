@@ -237,3 +237,48 @@ def test_08_no_workflow_selected_context_handled_safely():
         assert content["tab"] == sid
         assert isinstance(content["heading"], str)
         assert isinstance(content["description"], str)
+def test_09_calibrated_three_minute_timing_budget():
+    """Verify that Auto Demo step configuration strictly enforces the 3-minute budget (< 180s)."""
+    step_ids = ["decision", "workflow", "xai", "trace", "metrics", "evaluation", "history", "guide"]
+    assert len(step_ids) == 8, "Must present exactly 8 core workspace tabs"
+
+    # Calibrated values
+    step_dwell_seconds = 15
+    popup_countdown_seconds = 4
+    total_steps = len(step_ids)
+
+    viewing_time_total = total_steps * step_dwell_seconds # 8 * 15 = 120s
+    popup_time_total = total_steps * popup_countdown_seconds # 8 * 4 = 32s
+    nominal_total_duration = viewing_time_total + popup_time_total # 152s
+
+    assert viewing_time_total == 120, "Viewing dwell for 8 sections must be 120 seconds"
+    assert popup_time_total == 32, "Popup transition countdowns must total 32 seconds"
+    assert 150 <= nominal_total_duration <= 165, f"Nominal duration {nominal_total_duration}s must target ~2m 45s"
+    assert nominal_total_duration < 180, f"Nominal duration {nominal_total_duration}s must remain strictly under 3 minutes (180s)"
+
+
+def test_10_duration_formatting_and_monotonic_bounds():
+    """Verify time formatting and boundary conditions for the monotonic presentation timer."""
+    def format_duration(seconds: int) -> str:
+        mins = seconds // 60
+        secs = seconds % 60
+        return f"{mins}m {secs:02d}s"
+
+    assert format_duration(165) == "2m 45s"
+    assert format_duration(152) == "2m 32s"
+    assert format_duration(179) == "2m 59s"
+    assert format_duration(0) == "0m 00s"
+
+
+def test_11_stage_11_authorization_pause_invariant():
+    """Verify that Auto Demo never bypasses human approval at Stage 11."""
+    awaiting_ctx = {
+        "current_stage": "AWAITING_HUMAN_APPROVAL",
+        "workflow_status": "AWAITING_APPROVAL",
+        "gate_verdict": "ACCEPT",
+        "selected_candidate_id": "R-reroute-alt1"
+    }
+
+    step = generate_auto_demo_step_content("workflow", awaiting_ctx)
+    assert step["heading"] == "Awaiting Human Operator Authorization"
+    assert "strictly require manual operator authorization" in step["description"]

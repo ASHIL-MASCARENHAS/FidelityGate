@@ -406,6 +406,7 @@ function WorkspaceAppInner({
       <AutoDemoCompletionModal
         isOpen={autoDemo.demoState === 'COMPLETED'}
         context={autoDemo.context}
+        elapsedSeconds={autoDemo.elapsedSeconds}
         onRestart={autoDemo.restartDemo}
         onClose={() => autoDemo.setDemoState('IDLE')}
         soundEnabled={soundEnabled}
@@ -419,6 +420,7 @@ function WorkspaceAppInner({
           totalSteps={autoDemo.totalSteps}
           context={autoDemo.context}
           viewingCountdown={autoDemo.viewingCountdown}
+          elapsedSeconds={autoDemo.elapsedSeconds}
           isPaused={autoDemo.isPaused}
           isAwaitingApprovalPause={autoDemo.isAwaitingApprovalPause}
           onNext={autoDemo.advanceToNextStep}

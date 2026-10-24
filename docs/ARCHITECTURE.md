@@ -590,8 +590,8 @@ flowchart TD
     NO_WF --> NAV_WF[User guided to Workflow & Approval]
     
     CHK -- Yes --> S1[Modal Preview: Step 1 / 8]
-    S1 -->|Continue or 4s timeout| TAB1[Navigate to Tab 1 & Start 5s Dwell]
-    TAB1 --> DWELL1{5s Dwell Interval}
+    S1 -->|Continue or 4s timeout| TAB1[Navigate to Tab 1 & Start 15s Dwell]
+    TAB1 --> DWELL1{15s Dwell Interval}
     DWELL1 -->|Next or timeout| S2[Modal Preview: Step 2 / 8]
     
     subgraph ApprovalBoundary["Stage 11 Safety Boundary"]
@@ -617,3 +617,42 @@ flowchart TD
 3. **Persisted Backend Ground Truth**: Step explanations, statuses, and badges read directly from `selectedWorkflow` in `WorkflowRunContext`. If a workflow ended in `ABSTAIN` or `REJECTED_BY_HUMAN`, the tour truthfully announces the failure mode rather than simulating success.
 4. **Complete Operator Control**: The operator can pause, resume, skip, continue, or terminate the tour at any time via UI buttons or keyboard shortcuts (<kbd>Esc</kbd> to stop, <kbd>Space</kbd> to pause/resume, <kbd>Enter</kbd> to advance).
 5. **Clean Lifecycle Cleanup**: All JavaScript `setInterval` and `setTimeout` timers are tracked via refs and safely cleared upon unmount or mode deactivation, preventing memory leaks or unexpected tab jumps.
+---
+
+## 12. Public Deployment Architecture (Render & Vercel)
+
+FidelityGate employs a decoupled production topology optimized for serverless edge presentation and stateful scientific computation:
+
+```mermaid
+flowchart LR
+    Browser["Client Web Browser"] -->|HTTPS| Vercel["Vercel Edge Platform (Next.js 14 App Router)"]
+    Vercel -->|Server-Side HTTP / REST| Render["Render Web Service (FastAPI / Uvicorn)"]
+    
+    subgraph Vercel_Environment["Vercel Production Environment"]
+        Vercel_Pages["App Router Static & Dynamic Pages"]
+        BackendClient["src/lib/backend-client.ts (fetchBackend)"]
+        Next_Routes["src/app/api/** (Proxy Handlers)"]
+        Vercel_Pages --> Next_Routes
+        Next_Routes --> BackendClient
+    end
+
+    subgraph Render_Environment["Render Production Environment"]
+        Uvicorn["Uvicorn Server (:PORT, host 0.0.0.0)"]
+        FastAPI["FastAPI Application (fidelitygate.api.app)"]
+        Engines["Simulation & Decision Gate Engines"]
+        Disk[("Persistent Disk Mount /var/data/fidelitygate.db")]
+        
+        Uvicorn --> FastAPI
+        FastAPI --> Engines
+        Engines --> Disk
+    end
+
+    BackendClient -->|HTTPS: FIDELITYGATE_API_URL| Uvicorn
+```
+
+### Production Deployment Invariants:
+1. **Zero Subprocess Calls in Production**: Next.js route handlers delegate all computational and retrieval requests over HTTP to the FastAPI service using `fetchBackend`. The local CLI subprocess runner (`runPythonCli`) is disabled in production via environment detection (`VERCEL` or `DISABLE_PYTHON_SUBPROCESS`).
+2. **Unified Environment Configuration**: The backend base URL is uniformly resolved via `FIDELITYGATE_API_URL`, falling back to `FASTAPI_URL`, `NEXT_PUBLIC_API_URL`, or `http://127.0.0.1:8000`.
+3. **CORS Security with Preview Support**: FastAPI's `CORSMiddleware` allows requests from `localhost`, configured custom production domains, and matches all Vercel dynamic preview URLs via `allow_origin_regex=r"https://.*\.vercel\.app"`.
+4. **Persistent Storage Isolation**: On Render, SQLite is hosted on a 1 GB persistent disk volume (`/var/data/fidelitygate.db`), ensuring audit trails and workflow runs persist across container restarts.
+5. **Calibrated 3-Minute Auto Demo Timing**: The guided tour strictly satisfies the 3-minute hackathon presentation budget with 8 views, 15s dwell per section, 4s transition countdowns, and a live monotonic timer (~152s nominal, ~2m 45s real runtime).

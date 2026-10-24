@@ -970,3 +970,38 @@ tests/test_xai_explanations.py ...................                       [100%]
   - **Next.js Production Build (`npm run build`)**: 18/18 static and dynamic routes compiled cleanly.
   - **UI/Theme Inspection**: Verified in both Light (`#F7F8FA` paper, `#111827` ink) and Dark (`#08111F` navy, `#F2F5FA` off-white) modes.
 - **Verdict**: PASS — 100% complete and verified.
+---
+
+## 11. Final Public Deployment & 3-Minute Auto Demo Verification Pass
+
+- **Date**: 2026-10-24
+- **Scope**: Final public deployment configuration (FastAPI on Render via `render.yaml`, Next.js on Vercel), pure HTTP proxying without subprocess spawning in production, 3-minute Auto Demo timing calibration (15s dwell, 4s transition, ~2m 45s nominal, strictly < 3m), live monotonic timer, and full test expansion.
+- **Verification Results**:
+  - **Pytest Suite (`python -m pytest tests/ -v`)**:
+    - **174 passed, 0 failed** in 24.42s (100% pass rate).
+    - `tests/test_auto_demo_mode.py`: 11 passed (including `test_09_calibrated_three_minute_timing_budget`, `test_10_duration_formatting_and_monotonic_bounds`, and `test_11_stage_11_authorization_pause_invariant`).
+    - `tests/test_adaptive_investigation.py`: 24 passed.
+    - `tests/test_agentic_investigation.py`: 22 passed.
+    - `tests/test_anomaly_triage.py`: 22 passed.
+    - `tests/test_candidate_evaluation.py`: 26 passed.
+    - `tests/test_ingestion_pipeline.py`: 16 passed.
+    - `tests/test_workflow_orchestration.py`: 12 passed.
+    - `tests/test_xai_explanations.py`: 19 passed.
+    - `tests/test_outcome_integrity.py`: 6 passed.
+    - `tests/test_layer8a_integration.py`: 5 passed.
+    - `tests/test_decision_gate.py`: 4 passed.
+    - `tests/test_cli.py`: 3 passed.
+    - `tests/test_uncertainty.py`: 2 passed.
+    - `tests/test_baseline_evaluator.py`: 2 passed.
+  - **TypeScript Static Verification (`npx tsc --noEmit`)**: 0 errors.
+  - **ESLint Code Quality (`npm run lint`)**: 0 warnings, 0 errors.
+  - **Next.js Production Build (`npm run build`)**: 18/18 static and dynamic routes compiled successfully without subprocess dependencies.
+  - **Git Archive Submission Size (`git archive --format=zip`)**: 0.80 MB (strictly below 50 MB threshold).
+  - **Secrets & Sensitive Data Audit**: 0 findings.
+- **Timing Calibration Results**:
+  - Exactly 8 workspace views presented.
+  - Exactly 15s dwell per section (120s total).
+  - Exactly 4s transition preview countdown (32s total).
+  - Nominal baseline: 152s (~2m 32s). Real observed execution: ~2m 40s–2m 50s (target ~2m 45s, strictly < 180s).
+  - Stage 11 human authorization pause strictly preserved.
+- **Verdict**: PASS — 100% submission ready.

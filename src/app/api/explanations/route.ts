@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backend-client';
 import { runPythonCli } from '@/lib/python-bridge';
-
-const FASTAPI_URL = process.env.FASTAPI_URL || 'http://127.0.0.1:8000';
 
 function cleanStr(val: any): string | undefined {
   if (val === undefined || val === null) return undefined;
@@ -16,15 +15,12 @@ export async function GET(req: NextRequest) {
     const id = cleanStr(searchParams.get('id') || searchParams.get('explanation_id'));
     const limit = cleanStr(searchParams.get('limit')) || '50';
 
-    const targetUrl = id
-      ? `${FASTAPI_URL}/api/v1/explanations/${encodeURIComponent(id)}`
-      : `${FASTAPI_URL}/api/v1/explanations?limit=${encodeURIComponent(limit)}`;
+    const endpoint = id
+      ? `/api/v1/explanations/${encodeURIComponent(id)}`
+      : `/api/v1/explanations?limit=${encodeURIComponent(limit)}`;
 
     try {
-      const apiRes = await fetch(targetUrl, {
-        headers: { Accept: 'application/json' },
-        cache: 'no-store',
-      });
+      const apiRes = await fetchBackend(endpoint);
       const data = await apiRes.json().catch(() => ({}));
       return NextResponse.json(data, { status: apiRes.status });
     } catch {
@@ -76,14 +72,11 @@ export async function POST(req: NextRequest) {
       proxyBody.scenario_id = cleanScenarioId;
     }
 
-    const targetUrl = `${FASTAPI_URL}/api/v1/explanations`;
-
     try {
-      const apiRes = await fetch(targetUrl, {
+      const apiRes = await fetchBackend('/api/v1/explanations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(proxyBody),
-        cache: 'no-store',
       });
       const data = await apiRes.json().catch(() => ({}));
       return NextResponse.json(data, { status: apiRes.status });

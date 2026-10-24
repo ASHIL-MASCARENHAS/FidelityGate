@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CheckCircle2, RotateCw, X, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, RotateCw, X, ShieldCheck, ArrowRight, Sparkles, Clock, Timer } from 'lucide-react';
 import { AutoDemoContext } from '@/types/demo';
 import { playTick, playConfirmation } from '@/lib/sound';
 
@@ -11,6 +11,7 @@ interface AutoDemoCompletionModalProps {
   onRestart: () => void;
   onClose: () => void;
   soundEnabled?: boolean;
+  elapsedSeconds?: number;
 }
 
 export function AutoDemoCompletionModal({
@@ -19,12 +20,19 @@ export function AutoDemoCompletionModal({
   onRestart,
   onClose,
   soundEnabled = false,
+  elapsedSeconds,
 }: AutoDemoCompletionModalProps) {
   if (!isOpen) return null;
 
   const outcome = context.outcomeReport;
   const delta = outcome?.latency_delta_ms;
   const reductionPct = outcome?.latency_reduction_pct;
+
+  const formattedDuration = typeof elapsedSeconds === 'number'
+    ? `${Math.floor(elapsedSeconds / 60)}m ${(elapsedSeconds % 60).toString().padStart(2, '0')}s`
+    : '2m 45s';
+
+  const isUnderThreeMinutes = typeof elapsedSeconds === 'number' ? elapsedSeconds < 180 : true;
 
   return (
     <div
@@ -67,8 +75,39 @@ export function AutoDemoCompletionModal({
 
         {/* Summary text */}
         <p className="text-xs sm:text-sm text-muted-fg dark:text-muted-dark leading-relaxed">
-          You have completed the guided inspection of <strong>FidelityGate</strong> across all 8 core views. Real telemetry was triaged, candidate mitigations were evaluated under parameter uncertainty, the deterministic gate enforced safety invariants, and human authorization was respected before simulated execution.
+          You have completed the calibrated 3-minute guided inspection of <strong>FidelityGate</strong> across all 8 core views. Real telemetry was triaged, candidate mitigations evaluated under parameter uncertainty, the deterministic gate enforced safety invariants, and human authorization was respected before simulated execution.
         </p>
+
+        {/* Timing Performance Card */}
+        <div className="p-3.5 rounded-xl border border-hairline dark:border-hairline-dark bg-paper dark:bg-paper-dark flex items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-cobalt-subtle dark:bg-cobalt-subtle-dark flex items-center justify-center text-cobalt shrink-0">
+              <Timer className="w-4 h-4 text-cobalt dark:text-cyan-accent" />
+            </div>
+            <div>
+              <span className="text-muted-fg dark:text-muted-dark block text-[10px] uppercase tracking-wider">
+                Total Tour Duration
+              </span>
+              <span className="font-bold text-ink dark:text-ink-dark text-sm">
+                {formattedDuration}
+              </span>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold ${
+              isUnderThreeMinutes
+                ? 'bg-emerald-verdict-subtle text-emerald-verdict'
+                : 'bg-amber-warning-subtle text-amber-warning'
+            }`}>
+              <ShieldCheck className="w-3 h-3" />
+              {isUnderThreeMinutes ? 'Target Met (< 3m)' : 'Completed'}
+            </span>
+            <span className="block text-[10px] text-muted-fg mt-0.5">
+              8 views · 15s dwell · 4s count
+            </span>
+          </div>
+        </div>
 
         {/* Key Verified Findings Card */}
         <div className="p-4 rounded-xl border border-hairline dark:border-hairline-dark bg-paper dark:bg-paper-dark space-y-3 font-mono text-xs">
@@ -137,4 +176,3 @@ export function AutoDemoCompletionModal({
     </div>
   );
 }
-

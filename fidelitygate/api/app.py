@@ -76,10 +76,22 @@ app = FastAPI(
     description="FidelityGate Layer 1 Canonical REST API for Trustworthy Network Data Ingestion and Decision Assurance",
 )
 
-# Enable CORS for Next.js frontend and local development
+# Enable CORS for Next.js frontend, Vercel deployments, and local development
+cors_origins = list(settings.CORS_ORIGINS) if isinstance(settings.CORS_ORIGINS, list) else ["*"]
+for origin in [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://fidelitygate.vercel.app",
+]:
+    if origin not in cors_origins:
+        cors_origins.append(origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=cors_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -976,5 +988,121 @@ def get_workflow_outcome(workflow_run_id: str) -> InterventionOutcomeReport:
             detail=f"No outcome report found for workflow '{workflow_run_id}'. Intervention may not have executed yet.",
         )
     return outcome
+
+
+# ==========================================
+# Scenarios, Baselines, Runs & Investigation Endpoints (REST-Native)
+# ==========================================
+
+from ..scenarios import DEMO_SCENARIOS
+from ..baseline_evaluator import run_four_way_comparison
+from ..orchestrator import investigate
+from ..cli import run_adaptive_investigation, get_detailed_sweep
+
+
+@app.get("/api/v1/scenarios", tags=["Scenarios"])
+@app.get("/api/scenarios", tags=["Scenarios"])
+def get_scenarios_list() -> Dict[str, Any]:
+    """Lists registered canonical network simulation scenarios."""
+    scenarios_data = {k: s.model_dump() for k, s in DEMO_SCENARIOS.items()}
+    return {"status": "success", "data": scenarios_data}
+
+
+@app.get("/api/v1/baselines", tags=["Evaluation Lab"])
+@app.get("/api/baselines", tags=["Evaluation Lab"])
+def get_baselines_comparison() -> Dict[str, Any]:
+    """Executes deterministic 4-way baseline benchmark evaluation."""
+    comparison = run_four_way_comparison()
+    return {"status": "success", "data": comparison}
+
+
+@app.get("/api/v1/runs", tags=["Audit Runs"])
+@app.get("/api/runs", tags=["Audit Runs"])
+def get_recent_runs_list(limit: int = Query(default=50, ge=1, le=500)) -> List[Dict[str, Any]]:
+    """Retrieves recent simulation and workflow runs from persistent storage."""
+    rows = storage.recent(limit)
+    runs = []
+    for r in rows:
+        runs.append({
+            "id": r[0],
+            "created_at": r[1],
+            "scenario_id": r[2],
+            "scenario_name": r[3],
+            "decision": r[4],
+            "reason": r[5],
+            "report": json.loads(r[6]) if isinstance(r[6], str) else r[6],
+        })
+    return runs
+
+
+@app.get("/api/v1/investigate", tags=["Investigation"])
+@app.post("/api/v1/investigate", tags=["Investigation"])
+@app.get("/api/investigate", tags=["Investigation"])
+@app.post("/api/investigate", tags=["Investigation"])
+def run_investigation_api(
+    scenario: Optional[str] = Query(default=None),
+    scenario_key: Optional[str] = Query(default=None),
+    evaluations: int = Query(default=25),
+    payload: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Executes deterministic investigation and digital-twin parameter sweep."""
+    key = scenario_key or scenario
+    if payload:
+        key = payload.get("scenario_key") or payload.get("scenario") or key
+        evaluations = payload.get("evaluations", evaluations)
+    if not key:
+        key = "wan_congestion"
+
+    if key not in DEMO_SCENARIOS:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Unknown scenario: {key}",
+        )
+
+    scenario_obj = DEMO_SCENARIOS[key]
+    scenario_obj, gate, run_id = investigate(key, settings.DATABASE_PATH, evaluations)
+    detailed_points = get_detailed_sweep(scenario_obj, evaluations)
+
+    return {
+        "status": "success",
+        "run_id": run_id,
+        "scenario": scenario_obj.model_dump(),
+        "gate": {
+            "decision": gate.decision.value,
+            "reason": gate.reason,
+            "report": gate.report.model_dump(),
+        },
+        "sweep_points": detailed_points,
+    }
+
+
+@app.get("/api/v1/adaptive-investigation", tags=["Adaptive Investigation"])
+@app.post("/api/v1/adaptive-investigation", tags=["Adaptive Investigation"])
+@app.get("/api/v1/adaptive-investigate", tags=["Adaptive Investigation"])
+@app.post("/api/v1/adaptive-investigate", tags=["Adaptive Investigation"])
+@app.get("/api/adaptive-investigation", tags=["Adaptive Investigation"])
+@app.post("/api/adaptive-investigation", tags=["Adaptive Investigation"])
+@app.get("/api/adaptive-investigate", tags=["Adaptive Investigation"])
+@app.post("/api/adaptive-investigate", tags=["Adaptive Investigation"])
+def run_adaptive_investigation_api(
+    scenario: Optional[str] = Query(default=None),
+    scenario_key: Optional[str] = Query(default=None),
+    payload: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Executes counterexample search, targeted diagnostic probing, and Bayesian-bounded re-evaluation."""
+    key = scenario_key or scenario
+    if payload:
+        key = payload.get("scenario_key") or payload.get("scenario") or key
+    if not key:
+        key = "wan_congestion"
+
+    if key not in DEMO_SCENARIOS:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Unknown scenario: {key}",
+        )
+
+    return run_adaptive_investigation(key, settings.DATABASE_PATH)
+
 
 

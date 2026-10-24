@@ -314,21 +314,32 @@ The application is intended to provide a single workflow with linked evidence an
 | **Execution Trace** | Inspect persisted workflow events where available. |
 | **Metrics / Evaluation Lab** | Review actual metrics and benchmark outputs where available. |
 | **Audit Runs** | Reopen persisted execution records. |
-| **Auto Demo** | Navigate through the selected workflow without auto-approving actions. |
+| **Auto Demo** | Calibrated 2m 45s guided tour across all 8 views with a live monotonic timer; strictly pauses at Stage 11 for human authorization. |
 
 A missing artifact should be displayed as unavailable, not replaced with a fabricated success state.
 
+### Calibrated 3-Minute Auto Demo
+
+FidelityGate provides an automated, judge-ready demonstration calibrated for competitive technical presentations:
+
+- **Target Duration:** Approximately 2 minutes 45 seconds nominal (~152s–158s nominal, 2:40–2:50 real runtime, strictly < 3 minutes).
+- **Tour Structure:** 8 operational views inspected sequentially (Topology → Workflow & Approval → XAI → Audit Trace → Metrics → Evaluation Lab → Audit Runs → User Guide).
+- **Section Dwell:** Exactly 15 seconds dwell per section with animated countdown.
+- **Transition Countdowns:** 4 seconds preview modal between sections with instant skip/continue shortcuts (`Enter` / `Space` / `Esc`).
+- **Live Monotonic Timer:** Measures true elapsed wall-clock time in seconds, accounting for pauses and displaying progress (`Elapsed: 1m 45s / 2:45`) in the floating control bar and completion modal.
+- **Stage 11 Invariant:** When reaching Stage 11 in Workflow & Approval, Auto Demo **strictly pauses** if human authorization is pending. It never auto-approves or executes consequential actions.
+
 ### Recommended demo sequence
 
-1. Start the application and confirm backend health.
-2. Select or load a supported scenario.
+1. Start the application and confirm backend health (`/api/v1/health`).
+2. Select or load a supported scenario (e.g. `wan_congestion`).
 3. Start or open a persisted workflow.
 4. Inspect the candidate evaluation and counterexample if one exists.
 5. Review the diagnostic and uncertainty update where available.
 6. Inspect the XAI explanation and authoritative gate verdict.
-7. Make any approval decision manually.
+7. Make any approval decision manually at the Stage 11 boundary.
 8. Review the persisted simulated outcome.
-9. Use Auto Demo to navigate the relevant workspace sections.
+9. Launch Auto Demo (`Start 3-Minute Auto Demo`) to guide judges through all 8 tabs with live metrics.
 
 Do not describe an existing persisted run as a newly executed live run.
 
@@ -387,6 +398,44 @@ The startup script is intended to launch the local development stack.
 - API documentation: <http://127.0.0.1:8000/docs>
 
 Use the actual registered health endpoint when verifying backend readiness. If startup fails, inspect the terminal output and check whether ports 3000 and 8000 are occupied.
+
+## Production Deployment (Render & Vercel)
+
+FidelityGate is designed for public deployment using a split topology:
+- **Backend:** Python/FastAPI service deployed on **Render** with persistent SQLite storage.
+- **Frontend:** Next.js 14 App Router deployed on **Vercel** serverless platform.
+- **API Communication:** Next.js routes proxy cleanly to FastAPI via HTTP (`fetchBackend`) with zero subprocess spawning in production.
+
+### 1. Backend Deployment on Render
+
+The repository includes a ready-to-use [`render.yaml`](render.yaml) specification:
+
+1. Connect the GitHub repository in the **Render Dashboard**.
+2. Create a new **Blueprint** service (or Web Service).
+3. Render automatically provisions:
+   - **Environment:** `python`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn fidelitygate.api.app:app --host 0.0.0.0 --port $PORT`
+   - **Health Check Path:** `/api/v1/health`
+4. **Persistent Disk Storage:**
+   - On Starter/Standard tiers, mount a 1 GB persistent disk at `/var/data` with `DATABASE_PATH=/var/data/fidelitygate.db`.
+   - On Free tier, set `DATABASE_PATH=fidelitygate.db` or `data/fidelitygate.db`.
+5. Note the deployed backend URL (e.g., `https://fidelitygate-backend.onrender.com`).
+
+### 2. Frontend Deployment on Vercel
+
+1. Import the repository into the **Vercel Dashboard**.
+2. Configure project settings:
+   - **Framework Preset:** Next.js
+   - **Root Directory:** `./`
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `.next`
+3. Configure Environment Variables in Vercel:
+   - `FIDELITYGATE_API_URL`: Your Render backend URL (e.g., `https://fidelitygate-backend.onrender.com`)
+   - `FASTAPI_URL`: Same Render backend URL
+   - `NEXT_PUBLIC_API_URL`: Same Render backend URL
+   - `DISABLE_PYTHON_SUBPROCESS`: `true`
+4. Click **Deploy**. Vercel will build all 18 routes and connect them directly to your live FastAPI backend.
 
 ## Verification commands
 

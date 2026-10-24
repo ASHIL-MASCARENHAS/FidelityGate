@@ -21,7 +21,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `Active ${scenarioName}. Candidate reroute is currently unavailable for this workflow run (Stage: ${ctx.currentStage || 'UNINITIALIZED'}). To evaluate candidate mitigations, run an automated investigation or select a completed run from Audit Runs.`;
     },
     getNextPreview: () => 'Next: 13-Stage Workflow Orchestration & Human Authorization Boundary',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 2. WORKFLOW & APPROVAL
@@ -86,7 +86,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `Current Stage: ${ctx.currentStage || 'RECEIVED'}. Monotonic event bus transitions sequentially through validation, triage, agent investigation, simulation, and gate review.`;
     },
     getNextPreview: () => 'Next: Evidence-Based Explainable AI (XAI) & Attribution',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 3. EXPLAINABLE AI
@@ -117,7 +117,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `Artifact: ${ctx.explanationId}. Examines the 5 deterministic gate predicates (connectivity, capacity, latency SLO, robustness >= 0.90, zero counterexamples), exact counterexample perturbation vectors, and local simulator elasticity gradients without LLM hallucination.`;
     },
     getNextPreview: () => 'Next: Monotonically Sequenced Audit Trace (AgentOps)',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 4. EXECUTION TRACE
@@ -141,7 +141,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `No audit events recorded for current run context (Stage: ${ctx.currentStage || 'INITIAL'}). Events are recorded monotonically as the workflow progresses.`;
     },
     getNextPreview: () => 'Next: Fidelity & Latency Distribution Metrics',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 5. METRICS
@@ -158,7 +158,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `Nominal versus worst-case behavior across recorded runs. Visualizes latency distributions, stability metrics, and SLA threshold margins derived directly from persisted runs.`;
     },
     getNextPreview: () => 'Next: 4-Way Baseline Benchmarks in Evaluation Lab',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 6. EVALUATION LAB
@@ -173,7 +173,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `${candidateInfo}Empirical benchmark comparing FidelityGate against 3 standard policies: Nominal-Only (eliminates unsafe acceptances), Fixed Safety Margin (+25%, avoids false abstentions), and Non-Adaptive Sweeps (minimizes probe and simulation costs).`;
     },
     getNextPreview: () => 'Next: Immutable Audit Runs & Historical Forensics',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 7. AUDIT RUNS
@@ -195,7 +195,7 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `Complete historical record of all executed workflows, gate decisions, and outcome identifiers persisted immutably in SQLite. Select a run to inspect its artifacts across all tabs.`;
     },
     getNextPreview: () => 'Next: Platform Architecture & Hackathon Judging Alignment',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 
   // 8. USER GUIDE
@@ -209,6 +209,6 @@ export const AUTO_DEMO_STEPS: AutoDemoStep[] = [
       return `Comprehensive 12-section technical guide detailing system architecture, failure recovery invariants, and the 5 Hackathon Judging Criteria: Reusability, Governance & Responsibility, ROI/Business Value, MVP Readiness, and Originality & Innovation.`;
     },
     getNextPreview: () => 'Conclusion of Guided Auto Demo',
-    dwellSeconds: 5,
+    dwellSeconds: 15,
   },
 ];

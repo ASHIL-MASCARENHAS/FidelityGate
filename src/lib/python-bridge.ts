@@ -3,6 +3,19 @@ import path from 'path';
 
 export function runPythonCli(args: string[]): Promise<any> {
   return new Promise((resolve, reject) => {
+    // In serverless / Vercel production environments, Python subprocess execution is unavailable
+    if (
+      process.env.VERCEL ||
+      process.env.DISABLE_PYTHON_SUBPROCESS === 'true' ||
+      (process.env.NODE_ENV === 'production' && !process.env.ENABLE_LOCAL_PYTHON_CLI)
+    ) {
+      return reject(
+        new Error(
+          'Python CLI subprocess execution is disabled in production / Vercel. Ensure FIDELITYGATE_API_URL or FASTAPI_URL is configured to point to the live FastAPI backend service.'
+        )
+      );
+    }
+
     const pythonExe = process.env.PYTHON_EXEC_PATH || (process.platform === 'win32' ? 'python' : 'python3');
     const rootDir = process.cwd();
     const dbPath = process.env.DATABASE_PATH || path.join(rootDir, 'fidelitygate.db');

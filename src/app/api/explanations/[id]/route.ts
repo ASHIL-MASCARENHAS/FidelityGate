@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backend-client';
 import { runPythonCli } from '@/lib/python-bridge';
-
-const FASTAPI_URL = process.env.FASTAPI_URL || 'http://127.0.0.1:8000';
 
 export async function GET(
   req: NextRequest,
@@ -13,13 +12,8 @@ export async function GET(
       return NextResponse.json({ detail: 'Invalid explanation ID' }, { status: 400 });
     }
 
-    const targetUrl = `${FASTAPI_URL}/api/v1/explanations/${encodeURIComponent(id)}`;
-
     try {
-      const apiRes = await fetch(targetUrl, {
-        headers: { Accept: 'application/json' },
-        cache: 'no-store',
-      });
+      const apiRes = await fetchBackend(`/api/v1/explanations/${encodeURIComponent(id)}`);
       const data = await apiRes.json().catch(() => ({}));
       return NextResponse.json(data, { status: apiRes.status });
     } catch {
@@ -35,4 +29,3 @@ export async function GET(
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

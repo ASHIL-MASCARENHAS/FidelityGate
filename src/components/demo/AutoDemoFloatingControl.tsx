@@ -10,6 +10,7 @@ import {
   AlertCircle,
   Eye,
   CheckCircle2,
+  Clock,
 } from 'lucide-react';
 import { AutoDemoStep, AutoDemoContext } from '@/types/demo';
 import { playTick, playConfirmation } from '@/lib/sound';
@@ -26,6 +27,7 @@ interface AutoDemoFloatingControlProps {
   onTogglePause: () => void;
   onStop: () => void;
   soundEnabled?: boolean;
+  elapsedSeconds?: number;
 }
 
 export function AutoDemoFloatingControl({
@@ -40,6 +42,7 @@ export function AutoDemoFloatingControl({
   onTogglePause,
   onStop,
   soundEnabled = false,
+  elapsedSeconds,
 }: AutoDemoFloatingControlProps) {
   return (
     <aside
@@ -74,8 +77,19 @@ export function AutoDemoFloatingControl({
         </div>
       </div>
 
-      {/* Center: Awaiting approval pause notice OR viewing countdown */}
+      {/* Center: Monotonic tour timer & viewing countdown */}
       <div className="flex items-center gap-2">
+        {typeof elapsedSeconds === 'number' && (
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paper dark:bg-paper-dark border border-hairline dark:border-hairline-dark text-xs font-mono text-muted-fg dark:text-muted-dark">
+            <Clock className="w-3.5 h-3.5 text-cobalt dark:text-cyan-accent" />
+            <span>Tour:</span>
+            <span className="font-bold text-ink dark:text-ink-dark tabular-nums">
+              {Math.floor(elapsedSeconds / 60)}:{(elapsedSeconds % 60).toString().padStart(2, '0')}
+            </span>
+            <span className="text-[10px] text-muted-fg">/ 2:45</span>
+          </div>
+        )}
+
         {isAwaitingApprovalPause ? (
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-warning-subtle dark:bg-amber-warning-dark border border-amber-warning/30 text-amber-warning text-xs font-semibold animate-pulse">
             <AlertCircle className="w-3.5 h-3.5" />
@@ -86,7 +100,7 @@ export function AutoDemoFloatingControl({
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-paper dark:bg-paper-dark border border-hairline dark:border-hairline-dark text-xs font-mono">
             <span className="w-2 h-2 rounded-full bg-cyan-accent animate-ping" />
             <span className="text-muted-fg dark:text-muted-dark">
-              {isPaused ? 'Viewing Paused' : 'Next in'}
+              {isPaused ? 'Viewing Paused' : 'Section:'}
             </span>
             <span className="font-bold text-ink dark:text-ink-dark tabular-nums">
               {viewingCountdown}s
@@ -147,4 +161,3 @@ export function AutoDemoFloatingControl({
     </aside>
   );
 }
-

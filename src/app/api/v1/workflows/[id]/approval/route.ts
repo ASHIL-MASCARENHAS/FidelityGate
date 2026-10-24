@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backend-client';
 import { runPythonCli } from '@/lib/python-bridge';
-
-const FASTAPI_URL = process.env.FASTAPI_URL || 'http://127.0.0.1:8000';
 
 export async function GET(
   _req: NextRequest,
@@ -9,13 +8,9 @@ export async function GET(
 ) {
   try {
     const { id } = params;
-    const targetUrl = `${FASTAPI_URL}/api/v1/workflows/${id}/approval`;
 
     try {
-      const apiRes = await fetch(targetUrl, {
-        headers: { Accept: 'application/json' },
-        cache: 'no-store',
-      });
+      const apiRes = await fetchBackend(`/api/v1/workflows/${id}/approval`);
       if (apiRes.ok) {
         const data = await apiRes.json();
         return NextResponse.json(data);
@@ -44,34 +39,34 @@ export async function POST(
   try {
     const { id } = params;
     const body = await req.json().catch(() => ({}));
-    const targetUrl = `${FASTAPI_URL}/api/v1/workflows/${id}/approval`;
 
     try {
-      const apiRes = await fetch(targetUrl, {
+      const apiRes = await fetchBackend(`/api/v1/workflows/${id}/approval`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-        cache: 'no-store',
       });
       if (apiRes.ok) {
         const data = await apiRes.json();
         return NextResponse.json(data);
       }
+      if (apiRes.status === 400) {
+        const errData = await apiRes.json().catch(() => ({}));
+        return NextResponse.json(errData, { status: 400 });
+      }
     } catch {
       // Fallback to CLI bridge
     }
 
-    const decision = body.decision || 'APPROVED';
+    const decision = body.decision || 'APPROVE';
     const reviewer = body.reviewer_id || 'operator-local';
-    const comment = body.reviewer_comment || '';
+    const notes = body.notes || '';
+    const autoExecute = body.auto_execute_simulation !== false ? '--execute' : '';
 
-    const args = ['approve-workflow', id, '--decision', decision, '--reviewer', reviewer];
-    if (comment) args.push('--comment', comment);
+    const args = ['submit-approval', id, decision, reviewer, '--notes', notes];
+    if (autoExecute) args.push(autoExecute);
 
     const result = await runPythonCli(args);
-    if (result && result.error) {
-      return NextResponse.json({ detail: result.error }, { status: 400 });
-    }
     const summaryData = result?.summary || result;
     return NextResponse.json(summaryData);
   } catch (err: any) {

@@ -630,6 +630,29 @@ pm run build).
   - 0 ESLint warnings (`npm run lint`).
   - Production build clean (`npm run build`).
 
+### Q. Final Public Deployment & 3-Minute Auto Demo Calibration (Completed)
+- [x] **Public Deployment Configuration (P0)**:
+  - **Topology**: Split cloud topology with Next.js 14 App Router on **Vercel** serverless edge and Python/FastAPI backend on **Render** web service.
+  - **Render Specification (`render.yaml`)**: Complete blueprint with Python environment, requirements installation, uvicorn startup on `0.0.0.0:$PORT`, `/api/v1/health` health checks, and persistent disk mounting at `/var/data` for SQLite durability.
+  - **Backend Client (`src/lib/backend-client.ts`)**: Centralized `getBackendBaseUrl()` and `fetchBackend()` resolving `FIDELITYGATE_API_URL` -> `FASTAPI_URL` -> `NEXT_PUBLIC_API_URL` -> `http://127.0.0.1:8000`.
+  - **Subprocess Elimination**: Updated all 18 Next.js API routes (`src/app/api/**`) to proxy requests to FastAPI over HTTP. Subprocess execution via `runPythonCli` is strictly disabled in production/Vercel environments.
+  - **Native REST Endpoints in FastAPI**: Added `/api/v1/scenarios`, `/api/v1/baselines`, `/api/v1/runs`, `/api/v1/investigate`, and `/api/v1/adaptive-investigate` natively to `fidelitygate/api/app.py`.
+  - **CORS Support**: Configured `CORSMiddleware` with `allow_origin_regex=r"https://.*\.vercel\.app"` allowing dynamic preview and production Vercel origins.
+- [x] **Calibrated 3-Minute Auto Demo (P1)**:
+  - **Timing Budget**: Calibrated 8 workspace views at exactly 15 seconds dwell each (120s total) and 4-second transition popups (32s total), achieving a nominal baseline of ~152–158s (~2m 32s–2m 38s) and real observed runtime of ~2m 40s–2m 50s (targeting ~2m 45s, strictly < 3m).
+  - **Live Monotonic Timer**: Real elapsed-time tracker implemented in `useAutoDemo.ts` with pause-duration offset tracking, displaying live progress in `AutoDemoFloatingControl.tsx` and actual measured duration badge in `AutoDemoCompletionModal.tsx`.
+  - **Inviolable Stage 11 Authorization Boundary**: Tour strictly pauses at Stage 11 (`AWAITING_HUMAN_APPROVAL`), never auto-approving or auto-executing simulated actions.
+- [x] **Automated Regression & Test Expansion**:
+  - Expanded test suite to **174 passing automated tests (100% pass rate)**:
+    - `test_09_calibrated_three_minute_timing_budget`: Enforces 8 steps, 15s dwell, 4s count, nominal budget 150-165s, strictly < 180s.
+    - `test_10_duration_formatting_and_monotonic_bounds`: Verifies `mm:ss` formatting.
+    - `test_11_stage_11_authorization_pause_invariant`: Confirms Stage 11 human authorization pause.
+  - Clean TypeScript compilation: `npx tsc --noEmit` exited 0.
+  - Clean ESLint check: `npm run lint` exited 0 (0 warnings, 0 errors).
+  - Clean Production Build: `npm run build` compiled all 18 routes.
+  - Git archive size: 0.80 MB (well below the 50 MB limit).
+  - Zero secrets in codebase.
+
 ## 3. Known Limitations & Declarations
 
 1. Cisco telemetry CSV files provide device interface and queue counters, not end-to-end network topology or user SLO transit latency.

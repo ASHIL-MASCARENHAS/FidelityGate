@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file per `DOCUMENTATI
 
 ---
 
+## 2026-10-24 — Final Deployment Readiness & 3-Minute Auto Demo Timing Calibration (P0 & P1)
+
+### Added
+- **Production Public Deployment Configuration (P0)**:
+  - `render.yaml`: Production blueprint for FastAPI web service deployment on Render with persistent disk (`/var/data/fidelitygate.db`), automatic requirements installation, `0.0.0.0:$PORT` binding, and `/api/v1/health` checks.
+  - `src/lib/backend-client.ts`: Centralized backend base URL resolver (`FIDELITYGATE_API_URL` -> `FASTAPI_URL` -> `NEXT_PUBLIC_API_URL` -> `http://127.0.0.1:8000`) and typed `fetchBackend()` utility.
+  - Native FastAPI REST endpoints added in `fidelitygate/api/app.py`: `/api/v1/scenarios`, `/api/v1/baselines`, `/api/v1/runs`, `/api/v1/investigate`, and `/api/v1/adaptive-investigate`.
+  - CORS middleware updated with regex `allow_origin_regex=r"https://.*\.vercel\.app"` supporting dynamic Vercel deployments.
+  - Subprocess elimination: Updated all 18 Next.js API routes (`src/app/api/**`) to proxy requests to FastAPI over HTTP, preventing serverless subprocess crashes in Vercel.
+  - `DISABLE_PYTHON_SUBPROCESS`: Subprocess execution guard in `src/lib/python-bridge.ts`.
+- **Calibrated 3-Minute Auto Demo Presentation (P1)**:
+  - Calibrated dwell duration to 15 seconds per section across all 8 workspace views (`dwellSeconds: 15`).
+  - Calibrated transition modal preview countdown to 4 seconds (`popupCountdown: 4`).
+  - Total nominal budget: 152s (~2m 32s nominal, ~2m 45s real execution, strictly < 3m).
+  - High-precision monotonic elapsed-time timer with pause offset tracking implemented in `src/hooks/useAutoDemo.ts`.
+  - Live monotonic elapsed time badge displayed in `AutoDemoFloatingControl.tsx` and actual measured duration badge in `AutoDemoCompletionModal.tsx`.
+  - Stage 11 human authorization pause strictly preserved.
+- **Automated Regression Suite Expansion**:
+  - Added `test_09_calibrated_three_minute_timing_budget`, `test_10_duration_formatting_and_monotonic_bounds`, and `test_11_stage_11_authorization_pause_invariant` in `tests/test_auto_demo_mode.py`.
+  - Total test suite expanded to **174 passing automated tests (100% pass rate)**.
+
+---
+
 ## 2026-10-24 — Layer 8C: Guided Auto Demo Mode, Transition Popups & Judge-Ready Tour
 
 ### Added

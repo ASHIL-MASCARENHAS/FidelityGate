@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backend-client';
 import { runPythonCli } from '@/lib/python-bridge';
-
-const FASTAPI_URL = process.env.FASTAPI_URL || 'http://127.0.0.1:8000';
 
 export async function GET(
   _req: NextRequest,
@@ -9,13 +8,9 @@ export async function GET(
 ) {
   try {
     const { id } = params;
-    const targetUrl = `${FASTAPI_URL}/api/v1/workflows/${id}/events`;
 
     try {
-      const apiRes = await fetch(targetUrl, {
-        headers: { Accept: 'application/json' },
-        cache: 'no-store',
-      });
+      const apiRes = await fetchBackend(`/api/v1/workflows/${id}/events`);
       if (apiRes.ok) {
         const data = await apiRes.json();
         return NextResponse.json(data);

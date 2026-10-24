@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: fidelitygate-backend
+    runtime: python
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn fidelitygate.api.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: BACKEND_HOST
+        value: 0.0.0.0
+      - key: DATABASE_PATH
+        value: /var/data/fidelitygate.db
+      - key: DATA_ROOT
+        value: /var/data
+      - key: CORS_ORIGINS
+        value: '["https://*.vercel.app","http://localhost:3000","http://127.0.0.1:3000"]'
+    disk:
+      name: fidelitygate-data
+      mountPath: /var/data
+      sizeGB: 1
+

@@ -1858,3 +1858,97 @@ export interface AutoDemoStep {
   nextTabName?: string;
 }
 ```
+---
+
+## 11. Public Deployment Gateway & Proxy API Contracts
+
+### Backend Client Resolution (`src/lib/backend-client.ts`)
+```typescript
+export function getBackendBaseUrl(): string;
+export async function fetchBackend(endpoint: string, options?: RequestInit): Promise<Response>;
+```
+
+### Registered REST Bridge Endpoints
+
+#### `GET /api/v1/scenarios` (and alias `/api/scenarios`)
+- **Query Parameters:** None
+- **Response Model:**
+```json
+{
+  "status": "success",
+  "data": {
+    "wan_congestion": { "scenario_id": "WAN-01", "name": "WAN Link Saturation", ... },
+    "edge_failover": { ... }
+  }
+}
+```
+
+#### `GET /api/v1/baselines` (and alias `/api/baselines`)
+- **Query Parameters:** None
+- **Response Model:**
+```json
+{
+  "status": "success",
+  "data": [
+    { "policy": "Nominal-Only", "unsafe_acceptances": 8, "false_abstentions": 0, ... },
+    { "policy": "Fixed (+25%) Margin", "unsafe_acceptances": 0, "false_abstentions": 12, ... },
+    { "policy": "Non-Adaptive Sweep", "unsafe_acceptances": 0, "false_abstentions": 4, ... },
+    { "policy": "Adaptive FidelityGate", "unsafe_acceptances": 0, "false_abstentions": 0, ... }
+  ]
+}
+```
+
+#### `GET /api/v1/runs` (and alias `/api/runs`)
+- **Query Parameters:** `limit: int = 50` (1 to 500)
+- **Response Model:**
+```json
+[
+  {
+    "id": "run-4847392",
+    "created_at": "2026-10-24T16:20:00Z",
+    "scenario_id": "wan_congestion",
+    "scenario_name": "WAN Link Saturation",
+    "decision": "ACCEPT",
+    "reason": "Nominal prediction and all 25 parameter variations satisfied SLO.",
+    "report": { ... }
+  }
+]
+```
+
+#### `POST /api/v1/investigate` (and alias `/api/investigate`)
+- **Request Body:** `{ "scenario_key": "wan_congestion", "evaluations": 25 }`
+- **Response Model:**
+```json
+{
+  "status": "success",
+  "run_id": "run-...",
+  "scenario": { ... },
+  "gate": { "decision": "ACCEPT", "reason": "...", "report": { ... } },
+  "sweep_points": [ ... ]
+}
+```
+
+#### `POST /api/v1/adaptive-investigate` (and alias `/api/adaptive-investigation`)
+- **Request Body:** `{ "scenario_key": "wan_congestion" }`
+- **Response Model:**
+```json
+{
+  "status": "success",
+  "run_id": "run-...",
+  "scenario": { ... },
+  "counterexample": { "is_fragile": true, ... },
+  "diagnostic_observation": { "tool_id": "...", ... },
+  "gate": { "decision": "ACCEPT", ... },
+  "execution_trace": [ ... ],
+  "sweep_points": [ ... ]
+}
+```
+
+### Auto Demo Timing & Monotonic Counter Contracts
+- **`stepDwellSeconds`:** 15 seconds (8 sections = 120s total)
+- **`popupCountdownSeconds`:** 4 seconds (8 transitions = 32s total)
+- **`nominalDuration`:** 152 seconds (~2m 32s nominal, ~2m 45s real execution)
+- **`maxAllowableDuration`:** < 180 seconds (strictly < 3 minutes)
+- **`elapsedSeconds`:** Monotonic integer tracking active wall-clock seconds
+- **`formattedElapsed`:** String formatted as `Xm YYs` (e.g., `2m 44s`)
+- **`pauseInvariant`:** Strictly pauses at Stage 11 (`AWAITING_HUMAN_APPROVAL`)

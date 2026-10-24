@@ -1,27 +1,28 @@
+# FidelityGate — Final Deployment & 3-Minute Auto Demo Handoff
 
-## Auto Demo Mode & Judge-Ready Platform Status (2026-10-24)
-- **Current State**: COMPLETE & FULLY VERIFIED.
-- **Frontend Stack**: Next.js 14 App Router, Three.js 3D Globe, Framer Motion, TailwindCSS, Web Audio API micro-ticks, Auto Demo Tour State Machine.
-- **Backend Stack**: Canonical FastAPI monolith (:8000), SQLite ACID store, deterministic Python simulation & XAI engine.
-- **Test Pass Rate**: 171 of 171 tests passing (100%).
+## Platform & Submission Status (2026-10-24)
+- **Current State**: COMPLETE, HARDENED, CALIBRATED & PRODUCTION-READY.
+- **Frontend Stack**: Next.js 14 App Router on Vercel Edge, Three.js 3D Interactive Globe, Framer Motion, TailwindCSS, Web Audio API micro-ticks, Calibrated 3-Minute Auto Demo Tour State Machine.
+- **Backend Stack**: Canonical FastAPI monolith on Render with persistent disk (`render.yaml`), SQLite ACID store, deterministic Python simulation & XAI engine.
+- **Test Pass Rate**: 174 of 174 automated tests passing (100% pass rate).
 - **Build Status**: 18 of 18 routes compiled statically/dynamically with 0 errors, 0 ESLint warnings (`npm run build`).
-- **Auto Demo Mode**: Guided tour across all 8 workspace tabs (decision → workflow → xai → trace → metrics → evaluation → history → guide).
-- **Safety Boundary**: Automatic pause at Stage 11 (AWAITING_HUMAN_APPROVAL); zero automated interventions; preserves operator sovereignty.
-- **Pre-Transition Popups & Dwell Bar**: Status-aware dialogs with auto-advance countdown (4s) followed by 5s dwell on each destination tab with step counter and manual controls.
-- **Key Demo Flow**:
-  1. Start application: 
-`node start-dev.js` or 
-`npm run dev` + `python -m uvicorn fidelitygate.api.app:app`.
-  2. Open http://localhost:3000/workspace.
-  3. Ensure a workflow run is active (e.g. from Workflow & Approval or loaded from Audit Runs).
-  4. Click Auto Demo button in top navigation bar (or press <kbd>Enter</kbd> to advance, <kbd>Space</kbd> to pause, <kbd>Esc</kbd> to stop).
-  5. Tour smoothly walks through all 8 tabs, halts at human approval, and resumes after operator authorization.
+- **Auto Demo Mode**: Calibrated 2m 45s guided presentation across all 8 workspace tabs (Topology → Workflow & Approval → XAI → Trace → Metrics → Evaluation Lab → Audit Runs → User Guide).
+- **Timing Invariant**: 15s dwell per section + 4s transition popups = ~152s nominal, ~2m 45s real execution time, strictly < 3 minutes.
+- **Safety Boundary**: Strict automatic pause at Stage 11 (AWAITING_HUMAN_APPROVAL); zero automated interventions; preserves operator sovereignty.
+- **Subprocess Elimination**: Next.js API routes communicate with FastAPI via pure HTTP (`fetchBackend`); subprocess calls via `runPythonCli` are strictly disabled in production/Vercel.
+- **Package Hygiene**: Git archive zip size is 0.80 MB (< 50 MB hackathon threshold); 0 secrets found.
 
-### Current Layer Completed
-**Layer 8C: Guided Auto Demo Mode, Transition Popups & Judge-Ready Presentation**  
-Domain: IT Infrastructure  
-Use Case: Guided, zero-deception operator walkthrough with automated tab navigation and human governance preservation  
-Runtime Status: **FULL MVP (LAYERS 1–8C) VERIFIED & INTEGRATED (171/171 PASSING TESTS, 0 BUILD/LINT ERRORS)**
+### Production Deployment Instructions
+1. **Render (FastAPI Backend)**:
+   - Connect repository to Render.
+   - Use `render.yaml` blueprint or create a Web Service.
+   - Start Command: `uvicorn fidelitygate.api.app:app --host 0.0.0.0 --port $PORT`
+   - Mount persistent disk at `/var/data` with `DATABASE_PATH=/var/data/fidelitygate.db`.
+2. **Vercel (Next.js Frontend)**:
+   - Import repository to Vercel.
+   - Set `FIDELITYGATE_API_URL` to the Render backend URL (e.g. `https://fidelitygate-backend.onrender.com`).
+   - Set `DISABLE_PYTHON_SUBPROCESS=true`.
+   - Deploy.
 
 ---
 
