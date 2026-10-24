@@ -1,0 +1,26 @@
+{
+  "ingestion_id": "ing-f2189c69",
+  "dataset_id": "cisco-ie-telemetry-bgpclear",
+  "dataset_version": "master",
+  "started_at": "2026-10-23T19:20:29.075376+00:00",
+  "completed_at": "2026-10-23T19:20:29.560069+00:00",
+  "source_file": "bgpclear_sample_1000.csv",
+  "source_checksum": "aed9f23075ff1fcfc1ec1e6d295580f4c752dd99a12fe66e2c478f8b935c28cb",
+  "source_row_count": 1000,
+  "accepted_count": 22000,
+  "rejected_count": 0,
+  "quarantined_count": 0,
+  "duplicate_count": 0,
+  "missing_or_invalid_count": 0,
+  "quality_issues": [],
+  "output_artifacts": {
+    "processed_observations": "D:\\CGI hackathon\\FidelityGate_Antigravity_Starter (2)\\FidelityGate_Antigravity_Starter\\FidelityGate_Antigravity_Starter\\data\\processed\\ing-f2189c69_normalized.jsonl",
+    "manifest": "D:\\CGI hackathon\\FidelityGate_Antigravity_Starter (2)\\FidelityGate_Antigravity_Starter\\FidelityGate_Antigravity_Starter\\data\\manifests\\cisco-ie-telemetry-bgpclear_manifest.json"
+  },
+  "status": "SUCCESS",
+  "errors_or_limitations": [
+    "Does not contain topology or link capacity definitions directly in telemetry CSV.",
+    "Does not include post-intervention reroute outcomes or synthetic measurement-error envelopes.",
+    "Units are preserved as documented; unverified units are kept explicitly null."
+  ]
+}

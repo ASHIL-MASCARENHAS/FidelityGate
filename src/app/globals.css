@@ -1,0 +1,251 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #F7F8FA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-raised: #FFFFFF;
+  --text-primary: #111827;
+  --text-secondary: #657387;
+  --border-subtle: #E5E7EB;
+  --accent-cobalt: #4169F5;
+  --accent-cyan: #55D9F4;
+  --accent-surface: #EEF2FF;
+  --warning-amber: #D97706;
+  --success-emerald: #059669;
+  --danger-rose: #DC2626;
+
+  /* Accent channels consumed by Tailwind */
+  --accent-cobalt-rgb: 65 105 245;
+  --success-emerald-rgb: 34 197 139;
+  --warning-amber-rgb: 242 169 59;
+  --danger-rose-rgb: 240 93 109;
+}
+
+.dark {
+  --bg-primary: #08111F;
+  --bg-surface: #0D1B2A;
+  --bg-surface-raised: #111F34;
+  --text-primary: #F2F5FA;
+  --text-secondary: #9AA9BD;
+  --border-subtle: #22334A;
+  --accent-cobalt: #4169F5;
+  --accent-cyan: #55D9F4;
+  --accent-surface: rgba(65, 105, 245, 0.15);
+  --warning-amber: #F2A93B;
+  --success-emerald: #22C58B;
+  --danger-rose: #F05D6D;
+
+  --accent-cobalt-rgb: 65 105 245;
+  --success-emerald-rgb: 34 197 139;
+  --warning-amber-rgb: 242 169 59;
+  --danger-rose-rgb: 240 93 109;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ---------------------------------------------------------------------------
+   Mesh Gradients (Inspired by tools.ui-layouts.com/mesh-gradients)
+   Pure CSS GPU-accelerated atmospheric background gradients
+   -------------------------------------------------------------------------*/
+
+.dark-mesh-bg {
+  background-color: #08111F;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(65, 105, 245, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 20%, rgba(85, 217, 244, 0.06) 0px, transparent 45%),
+    radial-gradient(at 50% 80%, rgba(13, 27, 42, 0.95) 0px, transparent 60%),
+    radial-gradient(at 20% 85%, rgba(65, 105, 245, 0.05) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(85, 217, 244, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+.light-mesh-bg {
+  background-color: #F7F8FA;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(65, 105, 245, 0.03) 0px, transparent 50%),
+    radial-gradient(at 85% 20%, rgba(85, 217, 244, 0.02) 0px, transparent 45%),
+    radial-gradient(at 50% 80%, rgba(255, 255, 255, 0.8) 0px, transparent 60%);
+}
+
+.workspace-mesh-bg {
+  background-color: var(--bg-primary);
+}
+
+.dark .workspace-mesh-bg {
+  background-color: #08111F;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(65, 105, 245, 0.07) 0px, transparent 40%),
+    radial-gradient(at 90% 15%, rgba(85, 217, 244, 0.05) 0px, transparent 35%),
+    radial-gradient(at 50% 90%, rgba(17, 31, 52, 0.6) 0px, transparent 50%);
+}
+
+/* BilloDesign Rotating Angle Definition */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateBorder {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* Editorial card surface */
+.editorial-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px 0 rgba(17, 24, 39, 0.02);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.editorial-card:hover {
+  border-color: rgba(65, 105, 245, 0.4);
+}
+
+.dark .editorial-card:hover {
+  border-color: rgba(65, 105, 245, 0.45);
+}
+
+/* Typography component scale */
+@layer components {
+  .t-panel-title {
+    font-family: var(--font-sans), Inter, system-ui, sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: -0.011em;
+    color: var(--text-primary);
+  }
+
+  .t-eyebrow {
+    font-family: var(--font-sans), Inter, system-ui, sans-serif;
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .t-body {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .t-label {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .t-metric {
+    font-family: var(--font-mono), 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Panel surface used by workspace analytics views */
+.glass-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px 0 rgba(17, 24, 39, 0.03);
+}
+
+.dark .glass-panel {
+  box-shadow: 0 4px 16px -6px rgba(0, 0, 0, 0.5);
+}
+
+.inset-panel {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+/* BilloDesign Rotating Animated Gradient Card */
+.billo-card {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background: linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
+              linear-gradient(var(--angle, 0deg), transparent 20%, rgba(65, 105, 245, 0.4), #4169F5, rgba(85, 217, 244, 0.7), transparent 80%) border-box;
+  animation: rotateBorder 10s linear infinite;
+  box-shadow: 0 2px 8px -2px rgba(17, 24, 39, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .billo-card {
+  background: linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
+              linear-gradient(var(--angle, 0deg), transparent 15%, rgba(65, 105, 245, 0.25), #4169F5, rgba(85, 217, 244, 0.75), transparent 85%) border-box;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4);
+}
+
+.billo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -8px rgba(65, 105, 245, 0.18);
+}
+
+.dark .billo-card:hover {
+  box-shadow: 0 14px 35px -8px rgba(65, 105, 245, 0.25);
+}
+
+.billo-button {
+  position: relative;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
+              linear-gradient(var(--angle, 0deg), #D7DCE5, #4169F5, #55D9F4) border-box;
+  animation: rotateBorder 6s linear infinite;
+}
+
+.dark .billo-button {
+  background: linear-gradient(#0D1B2A, #0D1B2A) padding-box,
+              linear-gradient(var(--angle, 0deg), #08111F, #4169F5, #55D9F4) border-box;
+}
+
+/* Minimal scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #22334A;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="range"] {
+  accent-color: #4169F5;
+}

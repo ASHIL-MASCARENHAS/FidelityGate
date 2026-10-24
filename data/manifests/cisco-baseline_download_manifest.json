@@ -1,0 +1,32 @@
+{
+  "source_id": "cisco-baseline",
+  "name": "Cisco Innovation Edge - Baseline No Anomaly",
+  "downloaded_at": "2026-10-23T19:13:41.876785+00:00",
+  "files": [
+    {
+      "file_name": "README.md",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/0/README.md",
+      "success": true,
+      "size_bytes": 1456,
+      "sha256_checksum": "c13029de8f254cd5ec74342fd6dcecb7aee958ee35e3b6e950c060011f7c0b36",
+      "error": null
+    },
+    {
+      "file_name": "baseline_header.txt",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/0/baseline_header.txt",
+      "success": true,
+      "size_bytes": 1799,
+      "sha256_checksum": "4d0a488c4a1be40c771537737a8f76f3c1ac70914faabfd5362c52ccac69cb40",
+      "error": null
+    },
+    {
+      "file_name": "baseline_no_anomaly.csv.gz",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/0/baseline_no_anomaly.csv.gz",
+      "success": true,
+      "size_bytes": 18840578,
+      "sha256_checksum": "820aca1f14871c594a97c71b048956b8e22063bb5572a8230f37b7e7f1d3f524",
+      "error": null
+    }
+  ],
+  "all_succeeded": true
+}

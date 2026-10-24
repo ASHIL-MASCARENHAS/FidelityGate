@@ -1,0 +1,231 @@
+{
+  "summary": {
+    "investigation_id": "inv-1248ea0e",
+    "triage_run_id": "trg-63c67858",
+    "scenario_id": null,
+    "agent_mode": "DETERMINISTIC_PLANNER",
+    "status": "COMPLETED",
+    "hypotheses_count": 2,
+    "candidate_diagnostics_count": 1,
+    "selected_diagnostic_id": "snmp_interface_poll",
+    "created_at": "2026-10-23T20:30:40.330098+00:00",
+    "completed_at": "2026-10-23T20:30:40.330680+00:00",
+    "fallback_reason": null
+  },
+  "report": {
+    "investigation_id": "inv-1248ea0e",
+    "triage_run_id": "trg-63c67858",
+    "scenario_id": null,
+    "agent_mode": "DETERMINISTIC_PLANNER",
+    "primary_finding_ids": [
+      "anom-stat-364cf37a",
+      "anom-stat-6ac607ce",
+      "anom-stat-2bb7d876",
+      "anom-stat-b05f1b7f",
+      "anom-stat-20c14f6d",
+      "anom-stat-8752d7b2",
+      "anom-stat-27b34ba8",
+      "anom-stat-b0ef314f",
+      "anom-stat-7cc463ca",
+      "anom-stat-c927f378"
+    ],
+    "hypotheses": [
+      {
+        "hypothesis_id": "hyp-bc752b3b",
+        "statement": "Documented routing session reset is temporally associated with prefix withdrawal and transient unroutable packet drops across border interfaces.",
+        "hypothesis_type": "BGP_SESSION_FLAP",
+        "supporting_evidence_ids": [
+          "ev-obs-224066da",
+          "ev-obs-39bdc8c5",
+          "ev-obs-780b5b71",
+          "ev-base-ae7cab80"
+        ],
+        "contradictory_evidence_ids": [],
+        "uncertainty_status": "CONFIRMED_CASE_EVENT",
+        "confidence_score": 0.92,
+        "label_origin": "SOURCE_DEFINED",
+        "limitations": [
+          "Physical peer adjacency matrix is omitted; causal propagation across topology is not established."
+        ]
+      },
+      {
+        "hypothesis_id": "hyp-fcc99bb2",
+        "statement": "Forwarding plane drop surge observed on entity '0/0/CPU0'. Candidate explanation includes local buffer exhaustion or missing FIB next-hop.",
+        "hypothesis_type": "FORWARDING_DROP_SURGE",
+        "supporting_evidence_ids": [
+          "ev-obs-224066da",
+          "ev-obs-39bdc8c5",
+          "ev-obs-780b5b71",
+          "ev-base-ae7cab80"
+        ],
+        "contradictory_evidence_ids": [],
+        "uncertainty_status": "STATISTICAL_ANOMALY_CONFIRMED",
+        "confidence_score": 0.82,
+        "label_origin": "STATISTICAL_DETECTOR",
+        "limitations": [
+          "Telemetry reports interface drops but does not directly measure user end-to-end latency impact."
+        ]
+      }
+    ],
+    "supporting_evidence_ids": [
+      "ev-obs-224066da",
+      "ev-obs-39bdc8c5",
+      "ev-obs-780b5b71",
+      "ev-base-ae7cab80"
+    ],
+    "contradictory_evidence_ids": [],
+    "unresolved_questions": [
+      "Are packet drops localized to interface queues or caused by transit buffer starvation?",
+      "What is the actual user-path latency drift resulting from this event?"
+    ],
+    "data_quality_warnings": [],
+    "suggested_diagnostic_categories": [
+      "snmp_interface_queue_telemetry",
+      "bgp_rib_prefix_audit",
+      "icmp_rtt_latency_probe"
+    ],
+    "limitations": [
+      "All correlations represent temporal and device co-occurrence; no causal link is proven without active diagnostics.",
+      "Complete physical network adjacency matrix is not present in Cisco telemetry CSV."
+    ],
+    "status": "COMPLETED",
+    "created_at": "2026-10-23T20:30:40.330098+00:00"
+  },
+  "plan": {
+    "plan_id": "plan-c2af5cc5",
+    "investigation_id": "inv-1248ea0e",
+    "candidate_diagnostics": [
+      {
+        "diagnostic_id": "snmp_interface_poll",
+        "tool_name": "SNMP v3 Interface Queue Telemetry",
+        "target_entity": "0/RP0/CPU0",
+        "target_parameter": "traffic_load_burst",
+        "purpose": "Resolves uncertainty in hypothesis 'hyp-bc752b3b' regarding traffic_load_burst.",
+        "related_finding_ids": [
+          "anom-stat-364cf37a",
+          "anom-stat-6ac607ce",
+          "anom-stat-2bb7d876",
+          "anom-stat-b05f1b7f",
+          "anom-stat-20c14f6d"
+        ],
+        "related_evidence_ids": [
+          "ev-obs-224066da",
+          "ev-obs-39bdc8c5",
+          "ev-obs-780b5b71",
+          "ev-base-ae7cab80"
+        ],
+        "expected_information_type": "Bounded measurement of Mbps with \u00b115.0 error.",
+        "estimated_cost_usd": 0.002,
+        "availability_status": "AVAILABLE",
+        "rank": 1
+      }
+    ],
+    "selected_diagnostic_id": "snmp_interface_poll",
+    "proposed_interventions": [
+      "R-reroute-alt1"
+    ],
+    "stop_conditions": [
+      "Stop diagnostics immediately if cumulative cost exceeds $0.05 USD.",
+      "If diagnostic measurement confirms SLO breach, immediately transition to ABSTAIN (fail-closed).",
+      "Candidate reroute cannot be enacted without independent digital-twin simulation and human operator approval."
+    ],
+    "budget_remaining": {
+      "diagnostic_calls_remaining": 3,
+      "usd_remaining": 0.05,
+      "max_tool_calls_permitted": 10
+    },
+    "limitations": [
+      "Planner evaluates candidate diagnostics from an allowlisted catalog; it does not execute live network changes.",
+      "Selected diagnostic must be dispatched and validated by Orchestrator before gate re-evaluation.",
+      "Digital-twin latency and capacity constraints will be deterministically verified in subsequent layers."
+    ],
+    "status": "READY",
+    "created_at": "2026-10-23T20:30:40.330525+00:00"
+  },
+  "events": [
+    {
+      "event_id": "evt-62b610c3",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.329560+00:00",
+      "actor": "Orchestrator",
+      "event_type": "INVESTIGATION_STARTED",
+      "details": {
+        "triage_run_id": "trg-63c67858",
+        "source_dataset": "cisco-ie-telemetry-bgpclear",
+        "findings_count": 20
+      }
+    },
+    {
+      "event_id": "evt-d25b2101",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.330168+00:00",
+      "actor": "Agent_A_Investigator",
+      "event_type": "TOOL_CALL",
+      "details": {
+        "tool": "inspect_topology",
+        "success": true
+      }
+    },
+    {
+      "event_id": "evt-5dfb1aa6",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.330209+00:00",
+      "actor": "Agent_A_Investigator",
+      "event_type": "HYPOTHESIS_FORMED",
+      "details": {
+        "mode": "DETERMINISTIC_PLANNER",
+        "hypotheses_count": 2,
+        "status": "COMPLETED"
+      }
+    },
+    {
+      "event_id": "evt-df2129dc",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.330590+00:00",
+      "actor": "Agent_B_Planner",
+      "event_type": "TOOL_CALL",
+      "details": {
+        "tool": "list_diagnostic_catalog",
+        "success": true
+      }
+    },
+    {
+      "event_id": "evt-286fd070",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.330630+00:00",
+      "actor": "Agent_B_Planner",
+      "event_type": "TOOL_CALL",
+      "details": {
+        "tool": "propose_candidate_reroute",
+        "route_id": "R-reroute-alt1",
+        "success": true
+      }
+    },
+    {
+      "event_id": "evt-4f0781e5",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.330665+00:00",
+      "actor": "Agent_B_Planner",
+      "event_type": "PLAN_GENERATED",
+      "details": {
+        "plan_id": "plan-c2af5cc5",
+        "candidates_count": 1,
+        "selected_diagnostic": "snmp_interface_poll",
+        "status": "READY"
+      }
+    },
+    {
+      "event_id": "evt-6e1ab1c5",
+      "investigation_id": "inv-1248ea0e",
+      "timestamp": "2026-10-23T20:30:40.330747+00:00",
+      "actor": "Orchestrator",
+      "event_type": "INVESTIGATION_COMPLETED",
+      "details": {
+        "status": "COMPLETED",
+        "agent_mode": "DETERMINISTIC_PLANNER",
+        "hypotheses_count": 2,
+        "diagnostics_count": 1
+      }
+    }
+  ]
+}

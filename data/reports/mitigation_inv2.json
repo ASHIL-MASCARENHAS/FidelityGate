@@ -1,0 +1,207 @@
+{
+  "evaluation_id": "eval-6bed68bb",
+  "investigation_id": "inv-30116452",
+  "plan_id": "plan-824bd6c5",
+  "scenario_id": "wan_congestion",
+  "scenario_version": "v1.0",
+  "model_version": "M/M/1-convex-queueing-v1.0",
+  "policy_version": "zero-drift-gate-v1.0",
+  "candidate_evaluations": [
+    {
+      "evaluation_id": "eval-6bed68bb",
+      "investigation_id": "inv-30116452",
+      "scenario_id": "wan_congestion",
+      "candidate_id": "R-reroute-alt1",
+      "action": {
+        "candidate_id": "R-reroute-alt1",
+        "action_type": "REROUTE_FLOW",
+        "flow_id": "flow_primary",
+        "source_node": "leaf1",
+        "destination_node": "leaf6",
+        "path": [
+          "leaf1",
+          "spine2",
+          "leaf6"
+        ],
+        "rationale": "Bypasses congested primary forwarding plane through alternate spine transit.",
+        "supporting_evidence_ids": [],
+        "originating_investigation_id": "inv-30116452"
+      },
+      "validation": {
+        "is_valid": true,
+        "status": "VALID",
+        "reasons": [
+          "All nodes, directed edges, and flow constraints successfully verified."
+        ],
+        "validated_path": [
+          "leaf1",
+          "spine2",
+          "leaf6"
+        ],
+        "hop_count": 2,
+        "edges_traversed": [
+          "e_leaf1_spine2",
+          "e_spine2_leaf6"
+        ]
+      },
+      "nominal_prediction": {
+        "flow_id": "flow_primary",
+        "latency_ms": 23.0,
+        "slo_latency_ms": 45.0,
+        "peak_utilization": 0.5,
+        "is_connected": true,
+        "capacity_violated": false,
+        "slo_violated": false,
+        "bottleneck_edge_id": "e_leaf1_spine2",
+        "link_results": [
+          {
+            "edge_id": "e_leaf1_spine2",
+            "source": "leaf1",
+            "target": "spine2",
+            "load_mbps": 500.0,
+            "capacity_mbps": 1000.0,
+            "utilization": 0.5,
+            "delay_ms": 9.2,
+            "is_overloaded": false
+          },
+          {
+            "edge_id": "e_spine2_leaf6",
+            "source": "spine2",
+            "target": "leaf6",
+            "load_mbps": 500.0,
+            "capacity_mbps": 1000.0,
+            "utilization": 0.5,
+            "delay_ms": 13.8,
+            "is_overloaded": false
+          }
+        ],
+        "model_version": "M/M/1-convex-queueing-v1.0",
+        "assumptions": [
+          "M/M/1-inspired convex buffer queueing delay approximation (not packet-level discrete-event simulation).",
+          "Steady-state fluid traffic demands across the evaluation window.",
+          "Additive independent link propagation delays with bounded queueing interaction."
+        ]
+      },
+      "uncertainty_report": {
+        "evaluations": 25,
+        "nominal_latency_ms": 23.0,
+        "worst_latency_ms": 32.48,
+        "peak_utilization": 0.575,
+        "stability_score": 1.0,
+        "violations": 0,
+        "sensitivity": {
+          "propagation_drift_ms": 13.18,
+          "traffic_load_burst_util": 0.1
+        }
+      },
+      "counterexample": {
+        "is_fragile": false,
+        "violating_latency_ms": 23.0,
+        "critical_parameter": "none",
+        "perturbation_factor": 1.0,
+        "slo_latency_ms": 45.0,
+        "margin_breach_ms": 0.0,
+        "explanation": "All evaluated parameter variations within declared envelope satisfy the 45.0 ms SLO."
+      },
+      "comparison": {
+        "baseline_latency_ms": 26.55,
+        "candidate_latency_ms": 23.0,
+        "latency_change_ms": -3.55,
+        "latency_change_pct": -13.37,
+        "baseline_peak_utilization": 0.76,
+        "candidate_peak_utilization": 0.5,
+        "peak_utilization_change": -0.26,
+        "newly_overloaded_edges": [],
+        "shared_flow_impacts": [
+          {
+            "flow_id": "flow_shared",
+            "baseline_latency_ms": 26.55,
+            "candidate_latency_ms": 18.95,
+            "latency_change_ms": -7.6,
+            "slo_latency_ms": 50.0,
+            "is_compliant": true
+          }
+        ],
+        "all_flows_compliant": true,
+        "comparison_supported": true,
+        "notes": [
+          "Candidate reduces path latency by 3.55 ms (13.37%)."
+        ]
+      },
+      "gate_report": {
+        "decision": "ACCEPT",
+        "reason": "All evaluated parameter variations pass the latency SLO and stability threshold.",
+        "report": {
+          "evaluations": 25,
+          "nominal_latency_ms": 23.0,
+          "worst_latency_ms": 32.48,
+          "peak_utilization": 0.575,
+          "stability_score": 1.0,
+          "violations": 0,
+          "sensitivity": {
+            "propagation_drift_ms": 13.18,
+            "traffic_load_burst_util": 0.1
+          }
+        }
+      },
+      "reference_evaluation": {
+        "reference_status": "VERIFIED_SAFE",
+        "true_latency_ms": 27.93,
+        "true_peak_utilization": 0.6765,
+        "ground_truth_safe": true,
+        "assumptions_difference": "Hidden capacity overrides: {'e_spine2_leaf6': 850.0}; True load drift: 1.15x; True propagation drift: 1.1x",
+        "notes": [
+          "Reference outcome: SAFE.",
+          "True predicted latency: 27.93 ms vs SLO 45.0 ms.",
+          "True peak utilization: 0.68."
+        ]
+      },
+      "status": "COMPLIANT",
+      "explanation_facts": {
+        "why_evaluated": "Bypasses congested primary forwarding plane through alternate spine transit.",
+        "nominal_prediction": {
+          "latency_ms": 23.0,
+          "slo_latency_ms": 45.0,
+          "peak_utilization": 0.5,
+          "bottleneck_edge": "e_leaf1_spine2"
+        },
+        "constraints_summary": {
+          "connectivity": "PASS",
+          "capacity": "PASS",
+          "slo": "PASS",
+          "shared_flows": "PASS"
+        },
+        "uncertainty_outcome": {
+          "evaluations": 25,
+          "violations": 0,
+          "stability_score": 1.0,
+          "worst_latency_ms": 32.48
+        },
+        "counterexample": {
+          "is_fragile": false,
+          "critical_parameter": "none",
+          "violating_latency_ms": 23.0,
+          "explanation": "All evaluated parameter variations within declared envelope satisfy the 45.0 ms SLO."
+        },
+        "gate_verdict": "ACCEPT",
+        "gate_justification": "All evaluated parameter variations pass the latency SLO and stability threshold."
+      },
+      "limitations": [
+        "Fluid queueing delay approximation (not packet-level discrete-event simulation).",
+        "Finite parameter sweep does not formally prove continuous interval safety."
+      ]
+    }
+  ],
+  "selected_candidate_id": "R-reroute-alt1",
+  "gate_verdict": "ACCEPT",
+  "gate_justification": "Candidate 'R-reroute-alt1' passed all connectivity, capacity, and SLO constraints under both nominal and perturbation uncertainty sweeps.",
+  "total_simulations": 27,
+  "duration_ms": 7.1,
+  "created_at": "2026-10-23T21:26:21.324618+00:00",
+  "data_mode": "SIMULATED",
+  "reference_evaluation_status": "VERIFIED_SAFE",
+  "limitations": [
+    "Evaluated in isolated simulation environment; physical network mutation not enacted.",
+    "Convex queueing delay approximation is a simplified fluid model, not packet-level discrete-event simulation."
+  ]
+}

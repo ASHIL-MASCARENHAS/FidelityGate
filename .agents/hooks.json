@@ -1,0 +1,5 @@
+{
+    "hook": "before_file_write",
+    "condition": "file.path.startsWith('/src/critical')",
+    "action": "require_approval"
+}

@@ -1,0 +1,19 @@
+{
+  "source_id": "cisco-ie-telemetry-bgpclear",
+  "name": "Cisco Innovation Edge Network Telemetry",
+  "source_url": "https://github.com/cisco-ie/telemetry",
+  "publication_reference": "ACM SIGCOMM BigDama'18 / IEEE INFOCOM'18",
+  "dataset_version": "master",
+  "license": "CDLA-Permissive-1.0",
+  "attribution": "Cisco Systems, Inc. (Community Data License Agreement – Permissive – Version 1.0)",
+  "download_timestamp": "2026-10-23T19:20:29.516106+00:00",
+  "source_format": "CSV",
+  "raw_file_path": "raw\\cisco_telemetry\\3\\bgpclear_sample_1000.csv",
+  "sha256_checksum": "aed9f23075ff1fcfc1ec1e6d295580f4c752dd99a12fe66e2c478f8b935c28cb",
+  "description": "Interface counters, drop stats, CPU, and route statistics from real-world Cisco IOS-XR lab runs.",
+  "limitations": [
+    "Does not contain topology or link capacity definitions directly in telemetry CSV.",
+    "Does not include post-intervention reroute outcomes or synthetic measurement-error envelopes.",
+    "Units are preserved as documented; unverified units are kept explicitly null."
+  ]
+}

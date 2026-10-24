@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.env
+*.db
+.streamlit/secrets.toml
+.DS_Store
+
+# Next.js and Node builds
+.next/
+node_modules/
+
+# Telemetry raw archives and large processed artifacts
+data/raw/**/*.gz
+data/raw/**/*.zip
+data/processed/*.jsonl
+data/quarantine/*.jsonl

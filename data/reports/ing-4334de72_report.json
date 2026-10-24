@@ -1,0 +1,26 @@
+{
+  "ingestion_id": "ing-4334de72",
+  "dataset_id": "cisco-ie-telemetry-baseline",
+  "dataset_version": "master",
+  "started_at": "2026-10-23T19:20:19.144306+00:00",
+  "completed_at": "2026-10-23T19:20:19.581861+00:00",
+  "source_file": "baseline_sample_1000.csv",
+  "source_checksum": "9d77af9d1212e062ed2a7331ceeafc05e04bdcc056c18bd641a4c43acd3f440f",
+  "source_row_count": 1000,
+  "accepted_count": 22000,
+  "rejected_count": 0,
+  "quarantined_count": 0,
+  "duplicate_count": 0,
+  "missing_or_invalid_count": 0,
+  "quality_issues": [],
+  "output_artifacts": {
+    "processed_observations": "D:\\CGI hackathon\\FidelityGate_Antigravity_Starter (2)\\FidelityGate_Antigravity_Starter\\FidelityGate_Antigravity_Starter\\data\\processed\\ing-4334de72_normalized.jsonl",
+    "manifest": "D:\\CGI hackathon\\FidelityGate_Antigravity_Starter (2)\\FidelityGate_Antigravity_Starter\\FidelityGate_Antigravity_Starter\\data\\manifests\\cisco-ie-telemetry-baseline_manifest.json"
+  },
+  "status": "SUCCESS",
+  "errors_or_limitations": [
+    "Does not contain topology or link capacity definitions directly in telemetry CSV.",
+    "Does not include post-intervention reroute outcomes or synthetic measurement-error envelopes.",
+    "Units are preserved as documented; unverified units are kept explicitly null."
+  ]
+}

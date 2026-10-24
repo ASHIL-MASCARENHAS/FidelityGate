@@ -1,0 +1,40 @@
+{
+  "source_id": "cisco-bgpclear",
+  "name": "Cisco Innovation Edge - BGP Clear Anomaly Event",
+  "downloaded_at": "2026-10-23T19:15:06.619144+00:00",
+  "files": [
+    {
+      "file_name": "README.md",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/3/README.md",
+      "success": true,
+      "size_bytes": 5561,
+      "sha256_checksum": "0aa5d3ac16bf5d68cc7e273b7de7a4ddd4b8fd301085133d285cef6d69465e13",
+      "error": null
+    },
+    {
+      "file_name": "bgpclear_header.txt",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/3/bgpclear_header.txt",
+      "success": true,
+      "size_bytes": 1799,
+      "sha256_checksum": "4d0a488c4a1be40c771537737a8f76f3c1ac70914faabfd5362c52ccac69cb40",
+      "error": null
+    },
+    {
+      "file_name": "bgpclear_casedata.txt",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/3/bgpclear_casedata.txt",
+      "success": true,
+      "size_bytes": 1683,
+      "sha256_checksum": "40313b4ac60daf12c690e82b2886fae9b03f3f300432ffd7f164aef17cbe261c",
+      "error": null
+    },
+    {
+      "file_name": "bgpclear08042017.csv.gz",
+      "remote_url": "https://raw.githubusercontent.com/cisco-ie/telemetry/master/3/bgpclear08042017.csv.gz",
+      "success": true,
+      "size_bytes": 12835814,
+      "sha256_checksum": "e196dc698ac3a2cd052ec9af65ef47ba464104d1f279ff3479048f5317594ece",
+      "error": null
+    }
+  ],
+  "all_succeeded": true
+}
